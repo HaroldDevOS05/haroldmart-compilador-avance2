@@ -1,0 +1,8 @@
+// Prueba con errores léxicos a propósito
+SI total_compra > $1000 ENTONCES descuento = 5
+SI edad # 60 ENTONCES descuento_adulto = 15
+MIENTRAS productos_limpieza >= 3 HACER regalo = 1 @
+SI precio_leche > $ ENTONCES precio_leche = $25.90
+SI piezas_pan < 6. ENTONCES rebaja_pan = 0.5
+SI descuento > 0 ENTONCES ESCRIBIR "Promoción aplicada
+SI total_compra > $500 / 2 ENTONCES descuento = 2

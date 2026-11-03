@@ -1,0 +1,13 @@
+// Reglas de Haroldmart - promociones de la semana
+// 1. Descuento por monto de compra
+SI total_compra > $1000 ENTONCES descuento = 5
+SI total_compra >= $2500 ENTONCES descuento = 10
+// 2. Descuento para adultos mayores que presentan su credencial
+SI edad >= 60 ENTONCES descuento_adulto = 15 SINO descuento_adulto = 0
+// 3. Paquete de productos de limpieza: regalo
+MIENTRAS productos_limpieza >= 3 HACER regalo = 1
+// 4. Rebajas en productos seleccionados
+SI precio_leche > $28.50 ENTONCES precio_leche = $25.90
+SI piezas_pan < 6 ENTONCES rebaja_pan = 0.5 SINO rebaja_pan = 1.5
+// 5. Mensaje para el cajero
+SI descuento > 0 ENTONCES ESCRIBIR "Promoción aplicada"

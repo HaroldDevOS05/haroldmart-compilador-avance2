@@ -1,0 +1,130 @@
+Programa
+├─ Regla
+│  └─ Si
+│     ├─ SI: SI
+│     ├─ Cond
+│     │  ├─ ID: total_compra
+│     │  ├─ Oprel
+│     │  │  └─ MAYOR: >
+│     │  └─ Valor
+│     │     └─ PRECIO: $1000
+│     ├─ ENTONCES: ENTONCES
+│     └─ Accion
+│        └─ Asig
+│           ├─ ID: descuento
+│           ├─ ASIGNA: =
+│           └─ Valor
+│              └─ NUM: 5
+├─ Regla
+│  └─ Si
+│     ├─ SI: SI
+│     ├─ Cond
+│     │  ├─ ID: total_compra
+│     │  ├─ Oprel
+│     │  │  └─ MAYORIGUAL: >=
+│     │  └─ Valor
+│     │     └─ PRECIO: $2500
+│     ├─ ENTONCES: ENTONCES
+│     └─ Accion
+│        └─ Asig
+│           ├─ ID: descuento
+│           ├─ ASIGNA: =
+│           └─ Valor
+│              └─ NUM: 10
+├─ Regla
+│  └─ Si
+│     ├─ SI: SI
+│     ├─ Cond
+│     │  ├─ ID: edad
+│     │  ├─ Oprel
+│     │  │  └─ MAYORIGUAL: >=
+│     │  └─ Valor
+│     │     └─ NUM: 60
+│     ├─ ENTONCES: ENTONCES
+│     ├─ Accion
+│     │  └─ Asig
+│     │     ├─ ID: descuento_adulto
+│     │     ├─ ASIGNA: =
+│     │     └─ Valor
+│     │        └─ NUM: 15
+│     └─ Sino
+│        ├─ SINO: SINO
+│        └─ Accion
+│           └─ Asig
+│              ├─ ID: descuento_adulto
+│              ├─ ASIGNA: =
+│              └─ Valor
+│                 └─ NUM: 0
+├─ Regla
+│  └─ Mientras
+│     ├─ MIENTRAS: MIENTRAS
+│     ├─ Cond
+│     │  ├─ ID: productos_limpieza
+│     │  ├─ Oprel
+│     │  │  └─ MAYORIGUAL: >=
+│     │  └─ Valor
+│     │     └─ NUM: 3
+│     ├─ HACER: HACER
+│     └─ Accion
+│        └─ Asig
+│           ├─ ID: regalo
+│           ├─ ASIGNA: =
+│           └─ Valor
+│              └─ NUM: 1
+├─ Regla
+│  └─ Si
+│     ├─ SI: SI
+│     ├─ Cond
+│     │  ├─ ID: precio_leche
+│     │  ├─ Oprel
+│     │  │  └─ MAYOR: >
+│     │  └─ Valor
+│     │     └─ PRECIO: $28.50
+│     ├─ ENTONCES: ENTONCES
+│     └─ Accion
+│        └─ Asig
+│           ├─ ID: precio_leche
+│           ├─ ASIGNA: =
+│           └─ Valor
+│              └─ PRECIO: $25.90
+├─ Regla
+│  └─ Si
+│     ├─ SI: SI
+│     ├─ Cond
+│     │  ├─ ID: piezas_pan
+│     │  ├─ Oprel
+│     │  │  └─ MENOR: <
+│     │  └─ Valor
+│     │     └─ NUM: 6
+│     ├─ ENTONCES: ENTONCES
+│     ├─ Accion
+│     │  └─ Asig
+│     │     ├─ ID: rebaja_pan
+│     │     ├─ ASIGNA: =
+│     │     └─ Valor
+│     │        └─ NUM: 0.5
+│     └─ Sino
+│        ├─ SINO: SINO
+│        └─ Accion
+│           └─ Asig
+│              ├─ ID: rebaja_pan
+│              ├─ ASIGNA: =
+│              └─ Valor
+│                 └─ NUM: 1.5
+└─ Regla
+   └─ Si
+      ├─ SI: SI
+      ├─ Cond
+      │  ├─ ID: descuento
+      │  ├─ Oprel
+      │  │  └─ MAYOR: >
+      │  └─ Valor
+      │     └─ NUM: 0
+      ├─ ENTONCES: ENTONCES
+      └─ Accion
+         └─ Escribir
+            ├─ ESCRIBIR: ESCRIBIR
+            └─ Valor
+               └─ CADENA: "Promoción aplicada"
+
+Reglas reconocidas: 7 · errores: 0

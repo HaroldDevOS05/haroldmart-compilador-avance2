@@ -1,0 +1,3 @@
+Reglas reconocidas: 3 · errores: 2 (0 léxicos, 2 sintácticos)
+  Línea 2: se esperaba ENTONCES antes de 'envio' (lo supuse para seguir)
+  Línea 3: error de sintaxis, se esperaba un operador de comparación (>, <, >=, <=) y llegó '100' (NUM)

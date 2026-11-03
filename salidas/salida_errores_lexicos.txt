@@ -1,0 +1,8 @@
+Reglas reconocidas: 1 · errores: 6 (6 léxicos, 0 sintácticos)
+  Línea 3: error léxico, símbolo inesperado '#'
+  Línea 4: error léxico, símbolo inesperado '@'
+  Línea 5: error léxico, precio incompleto '$' (falta un número después de '$')
+  Línea 6: error léxico, número decimal incompleto '6.' (falta un dígito después del punto)
+  Línea 7: error léxico, cadena sin cerrar "Promoción aplicada (falta la comilla de cierre)
+  Línea 8: error léxico, '/' sola (los comentarios empiezan con //)
+  (se omitieron 5 errores de sintaxis en renglones que ya tienen un error léxico: son consecuencia)

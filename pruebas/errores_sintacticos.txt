@@ -1,0 +1,8 @@
+// Prueba con errores de SINTAXIS (los tokens son válidos, la estructura de la regla no)
+SI total_compra > $1000 ENTONCES descuento = 5
+SI total_compra >= $500 envio = $0 SINO envio = $50
+SI piezas 100 ENTONCES precio_unitario = $8.50
+MIENTRAS productos_limpieza >= 3 HACER regalo = 1
+SINO descuento = 0
+SI edad >= 60 ENTONCES descuento_adulto =
+SI descuento > 0 ENTONCES ESCRIBIR "Promoción aplicada"

@@ -1,0 +1,7 @@
+// Avance 2: tres reglas reales de Haroldmart
+// 1) Descuento por monto de compra
+SI total_compra > $1000 ENTONCES descuento = 5
+// 2) Envío gratis a domicilio
+SI total_compra >= $500 ENTONCES envio = $0 SINO envio = $50
+// 3) Cotización de mayoreo
+SI piezas > 100 ENTONCES precio_unitario = $8.50 SINO precio_unitario = $10

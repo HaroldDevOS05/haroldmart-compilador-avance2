@@ -1,0 +1,11 @@
+Nombre             Tipo     Clase             Definida en  Usada en
+total_compra       dinero   dato de la venta  —            3, 4
+descuento          num      resultado         3, 4         13
+edad               num      dato de la venta  —            6
+descuento_adulto   num      resultado         6            —
+productos_limpieza num      dato de la venta  —            8
+regalo             num      resultado         8            —
+precio_leche       dinero   resultado         10           10
+piezas_pan         num      dato de la venta  —            11
+rebaja_pan         num      resultado         11           —
+Total: 9 variables

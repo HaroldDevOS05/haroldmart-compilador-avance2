@@ -1,0 +1,4 @@
+// Prueba de la tabla de símbolos: una variable que cambia de tipo
+SI total_compra > $1000 ENTONCES descuento = 5
+SI edad >= 60 ENTONCES descuento = $100
+SI descuento > 0 ENTONCES ESCRIBIR "Promoción aplicada"

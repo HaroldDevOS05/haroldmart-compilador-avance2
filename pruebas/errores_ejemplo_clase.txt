@@ -1,0 +1,4 @@
+SI total > 500 ENTONCES descuento = 10
+SI piezas > 3 envio = 0
+SI puntos 100 ENTONCES cupones = 1
+MIENTRAS puntos > 100 HACER cupones = 1

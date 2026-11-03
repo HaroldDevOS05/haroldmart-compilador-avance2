@@ -1,0 +1,62 @@
+LÍNEA TOKEN         LEXEMA                      
+2     SI            SI
+2     ID            total_compra
+2     MAYOR         >
+2     PRECIO        $1000
+2     ENTONCES      ENTONCES
+2     ID            descuento
+2     ASIGNA        =
+2     NUM           5
+3     SI            SI
+3     ID            edad
+3     NUM           60
+3     ENTONCES      ENTONCES
+3     ID            descuento_adulto
+3     ASIGNA        =
+3     NUM           15
+4     MIENTRAS      MIENTRAS
+4     ID            productos_limpieza
+4     MAYORIGUAL    >=
+4     NUM           3
+4     HACER         HACER
+4     ID            regalo
+4     ASIGNA        =
+4     NUM           1
+5     SI            SI
+5     ID            precio_leche
+5     MAYOR         >
+5     ENTONCES      ENTONCES
+5     ID            precio_leche
+5     ASIGNA        =
+5     PRECIO        $25.90
+6     SI            SI
+6     ID            piezas_pan
+6     MENOR         <
+6     ENTONCES      ENTONCES
+6     ID            rebaja_pan
+6     ASIGNA        =
+6     NUM           0.5
+7     SI            SI
+7     ID            descuento
+7     MAYOR         >
+7     NUM           0
+7     ENTONCES      ENTONCES
+7     ESCRIBIR      ESCRIBIR
+8     SI            SI
+8     ID            total_compra
+8     MAYOR         >
+8     PRECIO        $500
+8     NUM           2
+8     ENTONCES      ENTONCES
+8     ID            descuento
+8     ASIGNA        =
+8     NUM           2
+
+Total de tokens: 52
+Errores léxicos: 6
+  Línea 3: error léxico, símbolo inesperado '#'
+  Línea 4: error léxico, símbolo inesperado '@'
+  Línea 5: error léxico, precio incompleto '$' (falta un número después de '$')
+  Línea 6: error léxico, número decimal incompleto '6.' (falta un dígito después del punto)
+  Línea 7: error léxico, cadena sin cerrar "Promoción aplicada (falta la comilla de cierre)
+  Línea 8: error léxico, '/' sola (los comentarios empiezan con //)

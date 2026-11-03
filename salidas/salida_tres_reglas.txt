@@ -1,0 +1,67 @@
+Programa
+├─ Regla
+│  └─ Si
+│     ├─ SI: SI
+│     ├─ Cond
+│     │  ├─ ID: total_compra
+│     │  ├─ Oprel
+│     │  │  └─ MAYOR: >
+│     │  └─ Valor
+│     │     └─ PRECIO: $1000
+│     ├─ ENTONCES: ENTONCES
+│     └─ Accion
+│        └─ Asig
+│           ├─ ID: descuento
+│           ├─ ASIGNA: =
+│           └─ Valor
+│              └─ NUM: 5
+├─ Regla
+│  └─ Si
+│     ├─ SI: SI
+│     ├─ Cond
+│     │  ├─ ID: total_compra
+│     │  ├─ Oprel
+│     │  │  └─ MAYORIGUAL: >=
+│     │  └─ Valor
+│     │     └─ PRECIO: $500
+│     ├─ ENTONCES: ENTONCES
+│     ├─ Accion
+│     │  └─ Asig
+│     │     ├─ ID: envio
+│     │     ├─ ASIGNA: =
+│     │     └─ Valor
+│     │        └─ PRECIO: $0
+│     └─ Sino
+│        ├─ SINO: SINO
+│        └─ Accion
+│           └─ Asig
+│              ├─ ID: envio
+│              ├─ ASIGNA: =
+│              └─ Valor
+│                 └─ PRECIO: $50
+└─ Regla
+   └─ Si
+      ├─ SI: SI
+      ├─ Cond
+      │  ├─ ID: piezas
+      │  ├─ Oprel
+      │  │  └─ MAYOR: >
+      │  └─ Valor
+      │     └─ NUM: 100
+      ├─ ENTONCES: ENTONCES
+      ├─ Accion
+      │  └─ Asig
+      │     ├─ ID: precio_unitario
+      │     ├─ ASIGNA: =
+      │     └─ Valor
+      │        └─ PRECIO: $8.50
+      └─ Sino
+         ├─ SINO: SINO
+         └─ Accion
+            └─ Asig
+               ├─ ID: precio_unitario
+               ├─ ASIGNA: =
+               └─ Valor
+                  └─ PRECIO: $10
+
+Reglas reconocidas: 3 · errores: 0

@@ -1,0 +1,5 @@
+Reglas reconocidas: 4 · errores: 4 (0 léxicos, 4 sintácticos)
+  Línea 3: se esperaba ENTONCES antes de 'envio' (lo supuse para seguir)
+  Línea 4: error de sintaxis, se esperaba un operador de comparación (>, <, >=, <=) y llegó '100' (NUM)
+  Línea 6: error de sintaxis, se esperaba SI, MIENTRAS, ESCRIBIR o una variable al inicio de la regla y llegó 'SINO'
+  Línea 7: error de sintaxis, se esperaba un valor (número, precio con $ o cadena entre comillas) y la línea terminó

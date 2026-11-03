@@ -1,0 +1,2 @@
+Línea 3: error de sintaxis, se esperaba ENTONCES y llegó 'envio' (ID)
+El análisis se detiene en el primer error; parser_con_recuperacion.py muestra todos.
