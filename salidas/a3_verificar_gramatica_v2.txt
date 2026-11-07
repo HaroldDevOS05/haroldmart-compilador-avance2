@@ -1,0 +1,128 @@
+== MI GRAMÁTICA v2 (final, con operaciones) (34 reglas)
+   Recursión izquierda: no
+   Conflictos LL(1):    0
+   Conflictos SLR:      0 (en 58 estados)
+   → SIRVE para nuestro parser LL(1) · SIRVE para SLR
+== Versión 1 (Avance 2, sin operaciones) (22 reglas)
+   Recursión izquierda: no
+   Conflictos LL(1):    0
+   Conflictos SLR:      0 (en 36 estados)
+   → SIRVE para nuestro parser LL(1) · SIRVE para SLR
+== VERSIÓN A: con recursión izquierda en la lista de reglas (Programa → Programa Regla) (34 reglas)
+   Recursión izquierda: Programa
+   Conflictos LL(1):    4
+      celda [Programa, ESCRIBIR]: reglas 1, 2
+      celda [Programa, ID]: reglas 1, 2
+      celda [Programa, MIENTRAS]: reglas 1, 2
+   Conflictos SLR:      0 (en 57 estados)
+   → NO sirve para LL(1) · SIRVE para SLR
+== VERSIÓN B: sin factorizar el SINO (dos reglas Si que empiezan igual) (33 reglas)
+   Recursión izquierda: no
+   Conflictos LL(1):    1
+      celda [Si, SI]: reglas 32, 33
+   Conflictos SLR:      0 (en 57 estados)
+   → NO sirve para LL(1) · SIRVE para SLR
+== VERSIÓN C: Expr con recursión izquierda (Expr → Expr + Term, Term → Term * Factor) (32 reglas)
+   Recursión izquierda: Expr, Term
+   Conflictos LL(1):    12
+      celda [Expr, CADENA]: reglas 21, 22, 23
+      celda [Expr, ID]: reglas 21, 22, 23
+      celda [Expr, NUM]: reglas 21, 22, 23
+   Conflictos SLR:      0 (en 52 estados)
+   → NO sirve para LL(1) · SIRVE para SLR
+
+======================================================================
+DOCUMENTACIÓN DE MI GRAMÁTICA FINAL
+======================================================================
+Reglas numeradas:
+   1. Programa → Regla Programa
+   2. Programa → ε
+   3. Regla → Si
+   4. Regla → Mientras
+   5. Regla → Asig
+   6. Regla → Escribir
+   7. Si → SI Cond ENTONCES Accion Sino
+   8. Sino → SINO Accion
+   9. Sino → ε
+  10. Mientras → MIENTRAS Cond HACER Accion
+  11. Accion → Asig
+  12. Accion → Escribir
+  13. Asig → ID ASIGNA Valor
+  14. Escribir → ESCRIBIR Valor
+  15. Cond → ID Oprel Valor
+  16. Oprel → MAYOR
+  17. Oprel → MENOR
+  18. Oprel → MAYORIGUAL
+  19. Oprel → MENORIGUAL
+  20. Valor → Expr
+  21. Expr → Term ExprR
+  22. ExprR → MAS Term ExprR
+  23. ExprR → MENOS Term ExprR
+  24. ExprR → ε
+  25. Term → Factor TermR
+  26. TermR → POR Factor TermR
+  27. TermR → ENTRE Factor TermR
+  28. TermR → ε
+  29. Factor → NUM
+  30. Factor → PRECIO
+  31. Factor → PORC
+  32. Factor → CADENA
+  33. Factor → ID
+  34. Factor → PARIZQ Expr PARDER
+
+FIRST:
+  FIRST(Programa) = { SI, MIENTRAS, ID, ESCRIBIR, ε }
+  FIRST(Regla) = { SI, MIENTRAS, ID, ESCRIBIR }
+  FIRST(Si) = { SI }
+  FIRST(Sino) = { SINO, ε }
+  FIRST(Mientras) = { MIENTRAS }
+  FIRST(Accion) = { ID, ESCRIBIR }
+  FIRST(Asig) = { ID }
+  FIRST(Escribir) = { ESCRIBIR }
+  FIRST(Cond) = { ID }
+  FIRST(Oprel) = { MAYOR, MENOR, MAYORIGUAL, MENORIGUAL }
+  FIRST(Valor) = { ID, NUM, PRECIO, PORC, CADENA, PARIZQ }
+  FIRST(Expr) = { ID, NUM, PRECIO, PORC, CADENA, PARIZQ }
+  FIRST(ExprR) = { MAS, MENOS, ε }
+  FIRST(Term) = { ID, NUM, PRECIO, PORC, CADENA, PARIZQ }
+  FIRST(TermR) = { POR, ENTRE, ε }
+  FIRST(Factor) = { ID, NUM, PRECIO, PORC, CADENA, PARIZQ }
+
+FOLLOW:
+  FOLLOW(Programa) = { $ }
+  FOLLOW(Regla) = { SI, MIENTRAS, ID, ESCRIBIR, $ }
+  FOLLOW(Si) = { SI, MIENTRAS, ID, ESCRIBIR, $ }
+  FOLLOW(Sino) = { SI, MIENTRAS, ID, ESCRIBIR, $ }
+  FOLLOW(Mientras) = { SI, MIENTRAS, ID, ESCRIBIR, $ }
+  FOLLOW(Accion) = { SI, SINO, MIENTRAS, ID, ESCRIBIR, $ }
+  FOLLOW(Asig) = { SI, SINO, MIENTRAS, ID, ESCRIBIR, $ }
+  FOLLOW(Escribir) = { SI, SINO, MIENTRAS, ID, ESCRIBIR, $ }
+  FOLLOW(Cond) = { ENTONCES, HACER }
+  FOLLOW(Oprel) = { ID, NUM, PRECIO, PORC, CADENA, PARIZQ }
+  FOLLOW(Valor) = { SI, ENTONCES, SINO, MIENTRAS, HACER, ID, ESCRIBIR, $ }
+  FOLLOW(Expr) = { SI, ENTONCES, SINO, MIENTRAS, HACER, ID, ESCRIBIR, PARDER, $ }
+  FOLLOW(ExprR) = { SI, ENTONCES, SINO, MIENTRAS, HACER, ID, ESCRIBIR, PARDER, $ }
+  FOLLOW(Term) = { SI, ENTONCES, SINO, MIENTRAS, HACER, ID, ESCRIBIR, MAS, MENOS, PARDER, $ }
+  FOLLOW(TermR) = { SI, ENTONCES, SINO, MIENTRAS, HACER, ID, ESCRIBIR, MAS, MENOS, PARDER, $ }
+  FOLLOW(Factor) = { SI, ENTONCES, SINO, MIENTRAS, HACER, ID, ESCRIBIR, MAS, MENOS, POR, ENTRE, PARDER, $ }
+
+Tabla LL(1) (cada celda es el número de la regla a usar; vacío = error):
+
+| | SI | ENTONCES | SINO | MIENTRAS | HACER | ID | ASIGNA | ESCRIBIR | MAYOR | MENOR | MAYORIGUAL | MENORIGUAL | MAS | MENOS | POR | ENTRE | NUM | PRECIO | PORC | CADENA | PARIZQ | PARDER | $ |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| **Programa** | 1 |   |   | 1 |   | 1 |   | 1 |   |   |   |   |   |   |   |   |   |   |   |   |   |   | 2 |
+| **Regla** | 3 |   |   | 4 |   | 5 |   | 6 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+| **Si** | 7 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+| **Sino** | 9 |   | 8 | 9 |   | 9 |   | 9 |   |   |   |   |   |   |   |   |   |   |   |   |   |   | 9 |
+| **Mientras** |   |   |   | 10 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+| **Accion** |   |   |   |   |   | 11 |   | 12 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+| **Asig** |   |   |   |   |   | 13 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+| **Escribir** |   |   |   |   |   |   |   | 14 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+| **Cond** |   |   |   |   |   | 15 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+| **Oprel** |   |   |   |   |   |   |   |   | 16 | 17 | 18 | 19 |   |   |   |   |   |   |   |   |   |   |   |
+| **Valor** |   |   |   |   |   | 20 |   |   |   |   |   |   |   |   |   |   | 20 | 20 | 20 | 20 | 20 |   |   |
+| **Expr** |   |   |   |   |   | 21 |   |   |   |   |   |   |   |   |   |   | 21 | 21 | 21 | 21 | 21 |   |   |
+| **ExprR** | 24 | 24 | 24 | 24 | 24 | 24 |   | 24 |   |   |   |   | 22 | 23 |   |   |   |   |   |   |   | 24 | 24 |
+| **Term** |   |   |   |   |   | 25 |   |   |   |   |   |   |   |   |   |   | 25 | 25 | 25 | 25 | 25 |   |   |
+| **TermR** | 28 | 28 | 28 | 28 | 28 | 28 |   | 28 |   |   |   |   | 28 | 28 | 26 | 27 |   |   |   |   |   | 28 | 28 |
+| **Factor** |   |   |   |   |   | 33 |   |   |   |   |   |   |   |   |   |   | 29 | 30 | 31 | 32 | 34 |   |   |

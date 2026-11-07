@@ -1,0 +1,10 @@
+Expresión                                Esquema (en una pasada)                     Postfija del árbol                          ¿Igual?
+precio * 2 + 10                          precio 2 * 10 +                             precio 2 * 10 +                             sí
+(precio - descuento) * cantidad + envio  precio descuento - cantidad * envio +       precio descuento - cantidad * envio +       sí
+total_compra * 5%                        total_compra 5% *                           total_compra 5% *                           sí
+km * 2 + $30                             km 2 * $30 +                                km 2 * $30 +                                sí
+puntos - 100                             puntos 100 -                                puntos 100 -                                sí
+a - b - c                                a b - c -                                   a b - c -                                   sí
+a + b * c - (d - e) / f                  a b c * + d e - f / -                       a b c * + d e - f / -                       sí
+
+El esquema y el árbol dan lo mismo en las 7 expresiones.

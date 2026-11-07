@@ -1,0 +1,10 @@
+Venta de prueba (chica): total_compra = $320, km = 4, piezas = 30, edad = 30, puntos = 80
+
+Aplicando las promociones:
+  línea 3: descuento = $0 (dinero)
+  línea 5: envio = $38 (dinero)
+  línea 7: precio_unitario = $10 (dinero)
+  línea 8: cotizacion = $300 (dinero)
+  línea 9: pago = $358 (dinero)
+
+Reglas ejecutadas: 8 · errores de tipo: 0

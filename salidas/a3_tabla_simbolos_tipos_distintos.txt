@@ -1,0 +1,6 @@
+Nombre             Tipo     Clase             Definida en  Usada en
+descuento          porc     resultado         2, 3         4
+total_compra       dinero   dato de la venta  —            2
+edad               num      dato de la venta  —            3
+Total: 3 variables
+Aviso: Línea 3: 'descuento' era porc y ahora recibe dinero ($100)

@@ -1,0 +1,13 @@
+Nombre             Tipo     Clase             Definida en  Usada en
+descuento          dinero   resultado         2            —
+total_compra       dinero   dato de la venta  —            2
+precio_unitario    dinero   resultado         5            —
+piezas             num      dato de la venta  —            5
+Total: 4 variables
+
+Errores del archivo: 3 (3 léxicos, 0 sintácticos)
+  Línea 3: error léxico, símbolo inesperado '@'
+  Línea 4: error léxico, precio incompleto '$' (falta un número después de '$')
+  Línea 6: error léxico, símbolo inesperado '#'
+  (se omitió 1 error de sintaxis en un renglón que ya tiene un error léxico: es consecuencia, un error en cascada)
+La tabla solo incluye las reglas sin errores léxicos (reglas reconocidas: 2).

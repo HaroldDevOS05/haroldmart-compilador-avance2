@@ -1,0 +1,6 @@
+// AVANCE 3 · Programa 1: errores LÉXICOS (símbolos que el lenguaje no conoce)
+SI total_compra > $1000 ENTONCES descuento = total_compra * 5%
+SI edad >= 60 @ ENTONCES descuento_adulto = pago * 15%
+SI precio_leche > $ ENTONCES precio_leche = $25.90
+SI piezas > 100 ENTONCES precio_unitario = $8.50 SINO precio_unitario = $10
+MIENTRAS puntos > 100 HACER puntos = puntos - 100 #

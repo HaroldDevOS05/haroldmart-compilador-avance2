@@ -1,0 +1,9 @@
+// Errores de TIPO: bien escritos (la sintaxis es correcta) pero sin sentido
+descuento = 15% + total_compra
+cotizacion = total_compra * total_compra
+ESCRIBIR "Total: " + total_compra
+promedio = total_compra / 0
+ahorro = piezas / total_compra
+SI total_compra > 15% ENTONCES pago = $1
+sin_dato = total_compra + saldo_a_favor
+bien = total_compra * 15%

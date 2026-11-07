@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Verificador de la gramática de Haroldmart · AVANCE 2 · Compiladores (IDS601) · UNEDL 2026B
+"""Verificador de la gramática de Haroldmart · AVANCES 2 y 3 · Compiladores (IDS601) · UNEDL 2026B
 Basado en verificar_base.py del profesor (paso 6 del ejemplo de la papelería).
 
 Verifica la gramática: ¿tiene recursión izquierda? ¿conflictos LL(1)? ¿conflictos SLR (LR)?
+
+La gramática FINAL es la versión 2 (con operaciones + - * / y paréntesis, Avance 3). La versión 1
+(Avance 2, sin operaciones) se conserva para comparar, y se agregan tres versiones «malas» a propósito
+(A, B y C) para ver cuántos conflictos LL(1) y SLR tiene cada una.
 
 Cómo correrlo (desde la carpeta del proyecto):
     python src/verificar_gramatica.py            # veredicto de cada versión de la gramática
@@ -12,9 +16,9 @@ import sys
 
 EPS = "ε"
 
-# ---------------- MI GRAMÁTICA (versión final, LL(1)) ----------------
+# ---------------- MI GRAMÁTICA v2 (versión final, LL(1)) ----------------
 # Una regla por renglón: ("LadoIzquierdo", [símbolos del lado derecho]).  [] = ε (vacío).
-# Los terminales se llaman igual que los tipos de token de mi escáner (SI, ID, NUM, PRECIO, ...).
+# Los terminales se llaman igual que los tipos de token de mi escáner (SI, ID, NUM, PRECIO, PORC, MAS, ...).
 TU_GRAMATICA = [
     ("Programa", ["Regla", "Programa"]), ("Programa", []),
     ("Regla", ["Si"]), ("Regla", ["Mientras"]), ("Regla", ["Asig"]), ("Regla", ["Escribir"]),
@@ -26,10 +30,22 @@ TU_GRAMATICA = [
     ("Escribir", ["ESCRIBIR", "Valor"]),
     ("Cond", ["ID", "Oprel", "Valor"]),
     ("Oprel", ["MAYOR"]), ("Oprel", ["MENOR"]), ("Oprel", ["MAYORIGUAL"]), ("Oprel", ["MENORIGUAL"]),
+    # --- NUEVO en la versión 2: un valor ahora es una expresión (la precedencia está en la estructura) ---
+    ("Valor", ["Expr"]),
+    ("Expr", ["Term", "ExprR"]),
+    ("ExprR", ["MAS", "Term", "ExprR"]), ("ExprR", ["MENOS", "Term", "ExprR"]), ("ExprR", []),
+    ("Term", ["Factor", "TermR"]),
+    ("TermR", ["POR", "Factor", "TermR"]), ("TermR", ["ENTRE", "Factor", "TermR"]), ("TermR", []),
+    ("Factor", ["NUM"]), ("Factor", ["PRECIO"]), ("Factor", ["PORC"]), ("Factor", ["CADENA"]),
+    ("Factor", ["ID"]), ("Factor", ["PARIZQ", "Expr", "PARDER"]),
+]
+
+# Versión 1 (Avance 2): un valor es solo NUM, PRECIO o CADENA (sin operaciones)
+GRAMATICA_V1 = [r for r in TU_GRAMATICA if r[0] not in ("Valor", "Expr", "ExprR", "Term", "TermR", "Factor")] + [
     ("Valor", ["NUM"]), ("Valor", ["PRECIO"]), ("Valor", ["CADENA"]),
 ]
 
-# AHORA TÚ 2: versión A, con recursión izquierda en la lista de reglas (Programa → Programa Regla)
+# AHORA TÚ 2 (Avance 2): versión A, con recursión izquierda en la lista de reglas (Programa → Programa Regla)
 CON_RECURSION_IZQUIERDA = [("Programa", ["Programa", "Regla"]), ("Programa", [])] + TU_GRAMATICA[2:]
 
 # versión B, sin factorizar: las dos formas de SI empiezan igual (SI Cond ENTONCES Accion ...)
@@ -37,11 +53,21 @@ SIN_FACTORIZAR = [r for r in TU_GRAMATICA if r[0] not in ("Si", "Sino")] + [
     ("Si", ["SI", "Cond", "ENTONCES", "Accion"]),
     ("Si", ["SI", "Cond", "ENTONCES", "Accion", "SINO", "Accion"]),
 ]
+SIN_FACTORIZAR = [r for r in SIN_FACTORIZAR if r[0] == "Programa"] + [r for r in SIN_FACTORIZAR if r[0] != "Programa"]
+
+# AVANCE 3, versión C: la expresión «de libro de texto» con recursión izquierda (Expr → Expr + Term)
+EXPR_RECURSIVA = [r for r in TU_GRAMATICA if r[0] not in ("Expr", "ExprR", "Term", "TermR")]
+EXPR_RECURSIVA = EXPR_RECURSIVA[:EXPR_RECURSIVA.index(("Factor", ["NUM"]))] + [
+    ("Expr", ["Expr", "MAS", "Term"]), ("Expr", ["Expr", "MENOS", "Term"]), ("Expr", ["Term"]),
+    ("Term", ["Term", "POR", "Factor"]), ("Term", ["Term", "ENTRE", "Factor"]), ("Term", ["Factor"]),
+] + EXPR_RECURSIVA[EXPR_RECURSIVA.index(("Factor", ["NUM"])):]
 
 GRAMATICAS = [
-    ("MI GRAMÁTICA (final)", TU_GRAMATICA),
-    ("VERSIÓN A: con recursión izquierda (Programa → Programa Regla)", CON_RECURSION_IZQUIERDA),
+    ("MI GRAMÁTICA v2 (final, con operaciones)", TU_GRAMATICA),
+    ("Versión 1 (Avance 2, sin operaciones)", GRAMATICA_V1),
+    ("VERSIÓN A: con recursión izquierda en la lista de reglas (Programa → Programa Regla)", CON_RECURSION_IZQUIERDA),
     ("VERSIÓN B: sin factorizar el SINO (dos reglas Si que empiezan igual)", SIN_FACTORIZAR),
+    ("VERSIÓN C: Expr con recursión izquierda (Expr → Expr + Term, Term → Term * Factor)", EXPR_RECURSIVA),
 ]
 
 

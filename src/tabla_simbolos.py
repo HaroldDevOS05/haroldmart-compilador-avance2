@@ -1,63 +1,160 @@
 # -*- coding: utf-8 -*-
-"""Tabla de símbolos de Haroldmart · Compiladores (IDS601) · UNEDL 2026B
-(basado en tabla_simbolos_base.py del profesor; pieza que se entrega en el AVANCE 3)
+"""
+tabla_simbolos.py - Tabla de símbolos de Haroldmart (versión 2, con expresiones)
+Compiladores (IDS601) - UNEDL 2026B - AVANCE 3  (adaptación de tabla_simbolos_base.py del profesor)
 
-Recorre el ÁRBOL que arma el parser y anota cada variable: nombre, tipo, si es resultado (se asigna)
-o dato de la venta (solo se usa en condiciones) y las líneas donde aparece. Avisa si una variable
-cambia de tipo (por ejemplo descuento = 5 y luego descuento = $100).
+Recorre el ÁRBOL y anota cada variable: nombre, tipo, clase y las líneas donde se DEFINE y donde se USA.
 
-Cómo correrlo (desde la carpeta del proyecto):
-    python src/tabla_simbolos.py pruebas/reglas_ok.txt
+  * DEFINIR = que reciba un valor:  descuento = ...     (Asig → ID = Valor)
+  * USAR    = que se lea su valor:  en una condición (SI total_compra > $1000) o dentro de una expresión
+              (pago = (total_compra - descuento) + envio  usa total_compra, descuento y envio).
+  * TIPO    = num | dinero | porc | cadena. Ahora un valor puede ser una expresión, así que el tipo se INFIERE
+              con las mismas reglas de combinar() de evaluar_atributos.py (dinero × porc → dinero, etc.).
+              Una variable que no se define en el archivo es un dato de la venta: su tipo sale de la venta
+              de prueba o, si no está ahí, de lo que se compara con ella.
+  * CLASE   = resultado (la calcula una regla) | dato de la venta (la manda la caja) | dato y resultado.
+
+El análisis léxico y sintáctico NO se detiene en el primer error: se listan todos (con su línea) y la tabla
+se arma con las reglas que sí se reconocieron.
+
+Uso:
+    python src/tabla_simbolos.py pruebas/promos_v2.txt
 """
 import sys
-from parser_Haroldmart import leer_tokens
-from parser_con_recuperacion import ParserConRecuperacion
 
-# Tipo de cada variable según la hoja del nodo Valor con la que se asigna o se compara
-TIPOS = {"NUM": "num", "PRECIO": "dinero", "CADENA": "cadena"}
+from parser_v2 import analizar, leer_archivo, nota_cascada, texto_expr
+from parser_con_recuperacion import lineas_de
+from evaluar_atributos import combinar, ErrorDeTipo, TIPOS_DE_LA_VENTA, primera_linea
+
+TIPO_DE_HOJA = {"NUM": "num", "PRECIO": "dinero", "PORC": "porc", "CADENA": "cadena"}
 
 
 class TablaDeSimbolos:
     def __init__(self):
-        self.simbolos = {}          # nombre → {"tipo": ..., "definida": [líneas], "usos": [líneas], "valores": [...]}
+        self.simbolos = {}          # nombre → {"tipo", "definida": [líneas], "usos": [líneas], "valores": [textos]}
         self.avisos = []
 
     def entrada(self, nombre):
         return self.simbolos.setdefault(nombre, {"tipo": None, "definida": [], "usos": [], "valores": []})
 
     def definir(self, nombre, tipo, valor, linea):
-        # TODO 1: guarda el tipo (si aún no tiene), la línea en "definida", y avisa si cambia de tipo
+        # guarda el tipo (si aún no tiene), la línea en "definida", y avisa si cambia de tipo
         s = self.entrada(nombre)
-        if s["tipo"] and s["tipo"] != tipo:
+        if tipo is None:
+            self.avisos.append(f"Línea {linea}: no se pudo determinar el tipo de '{nombre}' ({valor}): su expresión tiene un error de tipo o usa una variable sin tipo")
+        elif s["tipo"] and s["tipo"] != tipo:
             self.avisos.append(f"Línea {linea}: '{nombre}' era {s['tipo']} y ahora recibe {tipo} ({valor})")
         s["tipo"] = s["tipo"] or tipo
         s["definida"].append(linea)
         s["valores"].append(valor)
 
-    def usar(self, nombre, tipo, linea):
-        # TODO 2: agrega la línea a "usos"; si la variable no tiene tipo, toma el del valor con el que se compara
-        s = self.entrada(nombre)
-        s["tipo"] = s["tipo"] or tipo
-        s["usos"].append(linea)
+    def usar(self, nombre, linea):
+        # agrega la línea a "usos" (el tipo se resuelve después, con inferir_tipos)
+        self.entrada(nombre)["usos"].append(linea)
 
 
-def recorrer(nodo, tabla):
-    # TODO 3: Asig → ID ASIGNA Valor (definición) · Cond → ID Oprel Valor (uso); luego recorre los hijos.
-    if nodo.nombre in ("Asig", "Cond"):
+# ---------------- Paso 1: recorrer el árbol y juntar los hechos ----------------
+def es_id(n):
+    return not n.hijos and n.token and n.token[0] == "ID"
+
+
+def usos_en(n, hechos):
+    """Cada ID que aparece dentro de una expresión es un USO."""
+    if es_id(n):
+        hechos["usos"].append((n.token[1], n.token[2]))
+    for h in n.hijos:
+        usos_en(h, hechos)
+
+
+def recorrer(nodo, hechos):
+    """Asig → ID = Valor (definición) · Cond → ID Oprel Valor (uso) · ESCRIBIR Valor · ids dentro de expresiones (usos)."""
+    if nodo.nombre == "Asig":
         ident, _, valor = nodo.hijos
-        hoja = valor.hijos[0]                      # Valor → NUM | PRECIO | CADENA
-        nombre, linea = ident.token[1], ident.token[2]
-        tipo = TIPOS[hoja.nombre]
-        if nodo.nombre == "Asig":
-            tabla.definir(nombre, tipo, hoja.token[1], linea)
-        else:
-            tabla.usar(nombre, tipo, linea)
+        hechos["defs"].append((ident.token[1], valor.hijos[0], ident.token[2]))
+        usos_en(valor, hechos)
+        return
+    if nodo.nombre == "Cond":
+        ident, _, valor = nodo.hijos
+        hechos["usos"].append((ident.token[1], ident.token[2]))
+        hechos["conds"].append((ident.token[1], valor.hijos[0]))
+        usos_en(valor, hechos)
+        return
     for h in nodo.hijos:
-        recorrer(h, tabla)
+        recorrer(h, hechos)
+
+
+# ---------------- Paso 2: inferir el tipo de cada variable ----------------
+def tipo_de(n, tipos):
+    """Tipo de una expresión con lo que se sabe hasta ahora. None = todavía no se sabe (o es un error de tipo)."""
+    if not n.hijos:
+        if n.token[0] == "ID":
+            return tipos.get(n.token[1])
+        return TIPO_DE_HOJA[n.token[0]]
+    a, b = tipo_de(n.hijos[0], tipos), tipo_de(n.hijos[1], tipos)
+    if a is None or b is None:
+        return None
+    try:
+        return combinar(a, n.nombre, b, primera_linea(n))
+    except ErrorDeTipo:
+        return None
+
+
+def inferir_tipos(hechos):
+    """Punto fijo: se repite hasta que ya no se aprende nada nuevo.
+    1) lo que la caja manda (la venta de prueba)  2) el primer valor que se asigna  3) con qué se compara."""
+    definidas = {nombre for nombre, _, _ in hechos["defs"]}
+    tipos = {n: t for n, t in TIPOS_DE_LA_VENTA.items() if n in {u for u, _ in hechos["usos"]} | definidas}
+    cambio = True
+    while cambio:
+        cambio = False
+        for nombre, expr, _ in hechos["defs"]:
+            if nombre not in tipos and (t := tipo_de(expr, tipos)):
+                tipos[nombre], cambio = t, True
+        for nombre, expr in hechos["conds"]:
+            if nombre not in tipos and (t := tipo_de(expr, tipos)):
+                tipos[nombre], cambio = t, True
+    return tipos
+
+
+def armar_tabla(arbol, lineas_con_error=()):
+    """Arma la tabla con las reglas que no tocan una línea con error léxico (esas reglas no son confiables)."""
+    hechos = {"defs": [], "conds": [], "usos": []}
+    for regla in arbol.hijos:
+        if not (lineas_de(regla) & set(lineas_con_error)):
+            recorrer(regla, hechos)
+    tipos = inferir_tipos(hechos)
+    tabla = TablaDeSimbolos()
+    for nombre, expr, linea in sorted(hechos["defs"], key=lambda d: d[2]):
+        s = tabla.entrada(nombre)
+        if s["tipo"] is None and nombre in tipos:
+            s["tipo"] = tipos[nombre]                          # tipo inicial: el de la venta o el del primer valor
+        tabla.definir(nombre, tipo_de(expr, {**tipos, **{k: v["tipo"] for k, v in tabla.simbolos.items() if v["tipo"]}}),
+                      texto_expr(expr), linea)
+    for nombre, linea in hechos["usos"]:
+        tabla.usar(nombre, linea)
+    for nombre, s in tabla.simbolos.items():
+        s["tipo"] = s["tipo"] or tipos.get(nombre)
+    return tabla
 
 
 def lineas_sin_repetir(lista):
     return ", ".join(str(n) for n in sorted(set(lista))) or "—"
+
+
+def clase_de(nombre, s):
+    if not s["definida"]:
+        return "dato de la venta"
+    return "dato y resultado" if nombre in TIPOS_DE_LA_VENTA else "resultado"
+
+
+def imprimir_tabla(tabla):
+    print(f"{'Nombre':<18} {'Tipo':<8} {'Clase':<17} {'Definida en':<12} Usada en")
+    for nombre, s in sorted(tabla.simbolos.items(), key=lambda kv: min(kv[1]["definida"] + kv[1]["usos"] or [0])):
+        print(f"{nombre:<18} {str(s['tipo'] or '—'):<8} {clase_de(nombre, s):<17} "
+              f"{lineas_sin_repetir(s['definida']):<12} {lineas_sin_repetir(s['usos'])}")
+    print(f"Total: {len(tabla.simbolos)} variables")
+    for aviso in tabla.avisos:
+        print("Aviso:", aviso)
 
 
 def main():
@@ -68,25 +165,16 @@ def main():
         sys.stdout.reconfigure(encoding="utf-8")
     except AttributeError:
         pass
-    with open(sys.argv[1], encoding="utf-8-sig") as f:
-        texto = f.read()
-    tokens, errores_lexicos = leer_tokens(texto)
-    parser = ParserConRecuperacion(tokens)
-    arbol = parser.programa()
-    tabla = TablaDeSimbolos()
-    recorrer(arbol, tabla)
-
-    print(f"{'Nombre':<18} {'Tipo':<8} {'Clase':<17} {'Definida en':<12} Usada en")
-    for nombre, s in tabla.simbolos.items():
-        clase = "resultado" if s["definida"] else "dato de la venta"
-        print(f"{nombre:<18} {str(s['tipo'] or '—'):<8} {clase:<17} {lineas_sin_repetir(s['definida']):<12} {lineas_sin_repetir(s['usos'])}")
-    print(f"Total: {len(tabla.simbolos)} variables")
-    for aviso in tabla.avisos:
-        print("Aviso:", aviso)
-    if errores_lexicos or parser.errores:
-        print(f"Nota: el archivo tiene {len(errores_lexicos) + len(parser.errores)} errores; "
-              f"la tabla solo incluye las reglas que sí se reconocieron.")
-    return 0
+    r = analizar(leer_archivo(sys.argv[1]))
+    imprimir_tabla(armar_tabla(r.arbol, {l for l, _ in r.errores_lexicos}))
+    if r.errores:
+        print(f"\nErrores del archivo: {len(r.errores)} ({r.n_lexicos} léxicos, {r.n_sintacticos} sintácticos)")
+        for e in r.errores:
+            print("  " + e)
+        if r.omitidos:
+            print("  " + nota_cascada(r.omitidos))
+        print(f"La tabla solo incluye las reglas sin errores léxicos (reglas reconocidas: {r.reconocidas}).")
+    return 1 if r.errores else 0
 
 
 if __name__ == "__main__":

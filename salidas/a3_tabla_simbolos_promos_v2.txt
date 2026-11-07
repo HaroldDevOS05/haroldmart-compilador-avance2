@@ -1,0 +1,13 @@
+Nombre             Tipo     Clase             Definida en  Usada en
+descuento          dinero   resultado         3            9, 15
+total_compra       dinero   dato de la venta  —            3, 5, 9
+envio              dinero   resultado         5            9
+km                 num      dato de la venta  —            5
+precio_unitario    dinero   resultado         7            8
+piezas             num      dato de la venta  —            7, 8
+cotizacion         dinero   resultado         8            —
+pago               dinero   resultado         9            11
+descuento_adulto   dinero   resultado         11           —
+edad               num      dato de la venta  —            11
+puntos             num      dato y resultado  13           13
+Total: 11 variables

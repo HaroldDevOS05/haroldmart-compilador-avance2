@@ -1,0 +1,20 @@
+Expresión: precio * 2 + 10
+Acciones, en el orden en que se ejecutan:
+  1. emitir(precio) → precio
+  2. emitir(2) → precio 2
+  3. emitir(*) → precio 2 *
+  4. emitir(10) → precio 2 * 10
+  5. emitir(+) → precio 2 * 10 +
+Postfija: precio 2 * 10 +
+Expresión: (precio - descuento) * cantidad + envio
+Acciones, en el orden en que se ejecutan:
+  1. emitir(precio) → precio
+  2. emitir(descuento) → precio descuento
+  3. emitir(-) → precio descuento -
+  4. emitir(cantidad) → precio descuento - cantidad
+  5. emitir(*) → precio descuento - cantidad *
+  6. emitir(envio) → precio descuento - cantidad * envio
+  7. emitir(+) → precio descuento - cantidad * envio +
+Postfija: precio descuento - cantidad * envio +
+Expresión: precio * * 2
+Error: se esperaba un valor y llegó '*'

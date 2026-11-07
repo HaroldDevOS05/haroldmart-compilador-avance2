@@ -1,0 +1,6 @@
+1. Parser recursivo vs tabla LL(1): 300 programas al azar (+ 300 alterados) → 0 diferencias
+2. Esquema de traducción vs postfija del árbol: 7/7 iguales
+3. Tres direcciones ejecutado vs evaluador (venta grande): 11/11 variables iguales
+3. Tres direcciones ejecutado vs evaluador (venta chica): 10/10 variables iguales
+
+Todo coincide.

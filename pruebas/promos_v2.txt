@@ -1,0 +1,15 @@
+// Promociones de Haroldmart con operaciones (versión 2 del lenguaje)
+// 1) Descuento por monto: 5% si la compra pasa de $1000
+SI total_compra > $1000 ENTONCES descuento = total_compra * 5% SINO descuento = $0
+// 2) Envío gratis desde $500; si no, $2 por kilómetro más una cuota fija de $30
+SI total_compra >= $500 ENTONCES envio = $0 SINO envio = km * 2 + $30
+// 3) Cotización de mayoreo (más de 100 piezas) y pago final
+SI piezas > 100 ENTONCES precio_unitario = $8.50 SINO precio_unitario = $10
+cotizacion = precio_unitario * piezas
+pago = (total_compra - descuento) + envio
+// 4) Adultos mayores con credencial: 15% sobre el pago
+SI edad >= 60 ENTONCES descuento_adulto = pago * 15%
+// 5) Monedero Haroldmart: se canjean 100 puntos por vuelta
+MIENTRAS puntos > 100 HACER puntos = puntos - 100
+// 6) Mensaje para el cajero
+SI descuento > $0 ENTONCES ESCRIBIR "Promoción aplicada"

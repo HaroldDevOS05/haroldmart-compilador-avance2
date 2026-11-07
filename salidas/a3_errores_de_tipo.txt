@@ -1,0 +1,13 @@
+Venta de prueba (grande): total_compra = $1200, km = 4, piezas = 120, edad = 65, puntos = 250
+
+Aplicando las promociones:
+  Error de tipo: Línea 2: no se puede sumar un porcentaje con dinero
+  Error de tipo: Línea 3: no se puede multiplicar dinero por dinero
+  Error de tipo: Línea 4: no se puede sumar con una cadena de texto
+  Error de tipo: Línea 5: división entre cero
+  Error de tipo: Línea 6: no se puede dividir un número entre dinero
+  Error de tipo: Línea 7: no se puede comparar dinero con un porcentaje
+  Error de tipo: Línea 8: la venta no trae el dato 'saldo_a_favor'
+  línea 9: bien = $180 (dinero)
+
+Reglas ejecutadas: 1 · errores de tipo: 7

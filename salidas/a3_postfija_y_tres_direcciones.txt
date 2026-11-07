@@ -1,0 +1,56 @@
+== Notación postfija (una por cada expresión con operaciones) ==
+  Línea 3: total_compra * 5%   →   Postfija: total_compra 5% *
+  Línea 5: km * 2 + $30   →   Postfija: km 2 * $30 +
+  Línea 8: precio_unitario * piezas   →   Postfija: precio_unitario piezas *
+  Línea 9: total_compra - descuento + envio   →   Postfija: total_compra descuento - envio +
+  Línea 11: pago * 15%   →   Postfija: pago 15% *
+  Línea 13: puntos - 100   →   Postfija: puntos 100 -
+
+== Código de tres direcciones (un solo generador: t1, t2... y L1, L2... no se repiten) ==
+Línea 3: SI total_compra > $1000 ENTONCES descuento = total_compra * 5% SINO descuento = $0
+    ifFalse total_compra > $1000 goto L1
+    t1 = total_compra * 5%
+    descuento = t1
+    goto L2
+L1:
+    descuento = $0
+L2:
+Línea 5: SI total_compra >= $500 ENTONCES envio = $0 SINO envio = km * 2 + $30
+    ifFalse total_compra >= $500 goto L3
+    envio = $0
+    goto L4
+L3:
+    t2 = km * 2
+    t3 = t2 + $30
+    envio = t3
+L4:
+Línea 7: SI piezas > 100 ENTONCES precio_unitario = $8.50 SINO precio_unitario = $10
+    ifFalse piezas > 100 goto L5
+    precio_unitario = $8.50
+    goto L6
+L5:
+    precio_unitario = $10
+L6:
+Línea 8: cotizacion = precio_unitario * piezas
+    t4 = precio_unitario * piezas
+    cotizacion = t4
+Línea 9: pago = (total_compra - descuento) + envio
+    t5 = total_compra - descuento
+    t6 = t5 + envio
+    pago = t6
+Línea 11: SI edad >= 60 ENTONCES descuento_adulto = pago * 15%
+    ifFalse edad >= 60 goto L7
+    t7 = pago * 15%
+    descuento_adulto = t7
+L7:
+Línea 13: MIENTRAS puntos > 100 HACER puntos = puntos - 100
+L8:
+    ifFalse puntos > 100 goto L9
+    t8 = puntos - 100
+    puntos = t8
+    goto L8
+L9:
+Línea 15: SI descuento > $0 ENTONCES ESCRIBIR "Promoción aplicada"
+    ifFalse descuento > $0 goto L10
+    escribir "Promoción aplicada"
+L10:

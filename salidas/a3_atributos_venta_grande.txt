@@ -1,0 +1,34 @@
+Venta de prueba (grande): total_compra = $1200, km = 4, piezas = 120, edad = 65, puntos = 250
+
+Aplicando las promociones:
+  línea 3: descuento = $60 (dinero)
+        *   [val = $60, tipo = dinero]
+        ├─ total_compra   [val = $1200, tipo = dinero]
+        └─ 5%   [val = 5%, tipo = porc]
+  línea 5: envio = $0 (dinero)
+  línea 7: precio_unitario = $8.5 (dinero)
+  línea 8: cotizacion = $1020 (dinero)
+        *   [val = $1020, tipo = dinero]
+        ├─ precio_unitario   [val = $8.5, tipo = dinero]
+        └─ piezas   [val = 120, tipo = num]
+  línea 9: pago = $1140 (dinero)
+        +   [val = $1140, tipo = dinero]
+        ├─ -   [val = $1140, tipo = dinero]
+        │  ├─ total_compra   [val = $1200, tipo = dinero]
+        │  └─ descuento   [val = $60, tipo = dinero]
+        └─ envio   [val = $0, tipo = dinero]
+  línea 11: descuento_adulto = $171 (dinero)
+        *   [val = $171, tipo = dinero]
+        ├─ pago   [val = $1140, tipo = dinero]
+        └─ 15%   [val = 15%, tipo = porc]
+  línea 13: puntos = 150 (num)
+        -   [val = 150, tipo = num]
+        ├─ puntos   [val = 250, tipo = num]
+        └─ 100   [val = 100, tipo = num]
+  línea 13: puntos = 50 (num)
+        -   [val = 50, tipo = num]
+        ├─ puntos   [val = 150, tipo = num]
+        └─ 100   [val = 100, tipo = num]
+  línea 15: ESCRIBIR "Promoción aplicada"
+
+Reglas ejecutadas: 8 · errores de tipo: 0
