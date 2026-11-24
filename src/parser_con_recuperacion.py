@@ -23,6 +23,10 @@ INICIO_DE_REGLA = ("SI", "MIENTRAS", "ID", "ESCRIBIR")      # TODO 0: FIRST(Regl
 
 
 class ParserConRecuperacion(Parser):
+    # Los parsers que heredan (versión 3: declaraciones) solo cambian estas dos líneas
+    INICIO = INICIO_DE_REGLA
+    TEXTO_INICIO = "SI, MIENTRAS, ESCRIBIR o una variable al inicio de la regla"
+
     def __init__(self, tokens):
         super().__init__(tokens)
         self.errores = []
@@ -33,8 +37,8 @@ class ParserConRecuperacion(Parser):
         while self.tipo() != "$":
             inicio = self.linea()                      # línea donde EMPIEZA la regla
             try:
-                if self.tipo() not in INICIO_DE_REGLA:
-                    self.error("SI, MIENTRAS, ESCRIBIR o una variable al inicio de la regla", en_regla=False)
+                if self.tipo() not in self.INICIO:
+                    self.error(self.TEXTO_INICIO, en_regla=False)
                 reglas.append(self.regla())
             except ErrorSintactico as e:
                 self.errores.append(str(e))
@@ -44,7 +48,7 @@ class ParserConRecuperacion(Parser):
     def modo_panico(self, inicio):
         # TODO 2: avanza mientras NO sea "$" y NO (la línea sea mayor que «inicio» y el token inicie una regla).
         # Siempre avanza al menos hasta salir del renglón donde empezó la regla, así que nunca se cicla.
-        while self.tipo() != "$" and not (self.linea() > inicio and self.tipo() in INICIO_DE_REGLA):
+        while self.tipo() != "$" and not (self.linea() > inicio and self.tipo() in self.INICIO):
             self.pos += 1
 
     def emparejar(self, tipo):
@@ -62,9 +66,7 @@ def numero_de_linea(mensaje):
 
 def lineas_de(nodo):
     """Números de línea de todos los tokens de un subárbol."""
-    if nodo.token:
-        return {nodo.token[2]}
-    lineas = set()
+    lineas = {nodo.token[2]} if nodo.token else set()     # un nodo Llamada tiene token Y argumentos
     for h in nodo.hijos:
         lineas |= lineas_de(h)
     return lineas

@@ -1,0 +1,11 @@
+Fase 1 · Léxico:        37 tokens, 0 error(es)
+Fase 2 · Sintaxis:      7 reglas, 1 error(es)
+Fase 3 · Declaraciones: 3 variables, 1 funciones, 5 error(es)
+Fase 4 · Tipos:         0 error(es)
+  [sintaxis] Línea 9: error de sintaxis, se esperaba «)» y la línea terminó
+  [declaración] Línea 4: 'total_compra' ya estaba declarada en la línea 2
+  [declaración] Línea 5: 'redondear' recibe 1 dato(s) y le diste 2
+  [declaración] Línea 6: no existe la función 'descontar' (hay: redondear, aplicar_descuento, minimo)
+  [declaración] Línea 7: 'minimo' recibe 2 dato(s) y le diste 1
+  [declaración] Línea 8: 'envio' se usa sin declarar (¿falta «dinero envio»?)
+RESULTADO: 6 error(es) en total

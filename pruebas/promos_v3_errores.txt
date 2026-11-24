@@ -1,0 +1,13 @@
+// Prueba de errores de DECLARACIÓN (la sintaxis está bien; lo que no tiene sentido es el uso de los datos)
+dinero total_compra
+numero km
+porcentaje descuento
+dinero total_compra
+SI total_compra > $1000 ENTONCES descuento = 5%
+SI total_compra >= $500 ENTONCES envio = $0 SINO envio = km * 2 + $30
+pago = total_compra - descuento_adulto + envio
+numero puntos
+dinero ahorro
+ahorro = puntos * 2
+dinero edad
+SI edad >= 60 ENTONCES ESCRIBIR "Adulto mayor"

@@ -1,0 +1,13 @@
+Venta de prueba (chica): total_compra = $320, km = 4, piezas = 30, edad = 30, puntos = 80, tipo_cliente = "mostrador"
+
+Aplicando las promociones:
+  línea 20: tasa = 5% (porc)
+  línea 22: descuento = $0 (dinero)
+  línea 24: envio = $38 (dinero)
+  línea 26: precio_unitario = $10 (dinero)
+  línea 27: cotizacion = $300 (dinero)
+  línea 28: ahorro = $16 (dinero)
+  línea 29: pago = $342 (dinero)
+  línea 35: mensaje = "Promoción aplicada" (cadena)
+
+Reglas ejecutadas: 26 · errores de tipo: 0

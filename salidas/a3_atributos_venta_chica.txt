@@ -1,4 +1,4 @@
-Venta de prueba (chica): total_compra = $320, km = 4, piezas = 30, edad = 30, puntos = 80
+Venta de prueba (chica): total_compra = $320, km = 4, piezas = 30, edad = 30, puntos = 80, tipo_cliente = "mostrador"
 
 Aplicando las promociones:
   línea 3: descuento = $0 (dinero)

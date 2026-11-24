@@ -30,23 +30,27 @@ Uso:
 import operator
 import sys
 
-from parser_v2 import analizar, leer_archivo, nota_cascada
+from parser_v2 import leer_archivo, nota_cascada
+from parser_v4 import analizar
+from funciones import FUNCIONES, CALCULO
 from parser_con_recuperacion import lineas_de
 
 # ---------------- La venta de prueba: nombre → (valor, tipo).  Datos inventados de Haroldmart ----------------
 VENTAS = {
     "grande": {"total_compra": (1200, "dinero"), "km": (4, "num"), "piezas": (120, "num"),
-               "edad": (65, "num"), "puntos": (250, "num")},
+               "edad": (65, "num"), "puntos": (250, "num"), "tipo_cliente": ("frecuente", "cadena")},
     "chica": {"total_compra": (320, "dinero"), "km": (4, "num"), "piezas": (30, "num"),
-              "edad": (30, "num"), "puntos": (80, "num")},
+              "edad": (30, "num"), "puntos": (80, "num"), "tipo_cliente": ("mostrador", "cadena")},
 }
 VENTA = VENTAS["grande"]
 TIPOS_DE_LA_VENTA = {nombre: tipo for nombre, (_, tipo) in VENTA.items()}    # lo usa la tabla de símbolos
 
+INTERNO = {"numero": "num", "dinero": "dinero", "porcentaje": "porc", "texto": "cadena"}
 LIMITE_DE_VUELTAS = 1000          # un MIENTRAS que no termina se corta con un error
 
 OPERACIONES = {"+": operator.add, "-": operator.sub, "*": operator.mul, "/": operator.truediv}
-COMPARACIONES = {"MAYOR": operator.gt, "MENOR": operator.lt, "MAYORIGUAL": operator.ge, "MENORIGUAL": operator.le}
+COMPARACIONES = {"MAYOR": operator.gt, "MENOR": operator.lt, "MAYORIGUAL": operator.ge, "MENORIGUAL": operator.le,
+                "IGUAL": operator.eq, "DIFERENTE": operator.ne}
 VERBO = {"+": "sumar", "-": "restar", "*": "multiplicar", "/": "dividir"}
 NOMBRE_DE_TIPO = {"num": "un número", "dinero": "dinero", "porc": "un porcentaje", "cadena": "una cadena de texto"}
 
@@ -92,8 +96,10 @@ def combinar(t1, op, t2, linea):
     return "porc" if (t1 == "porc" and t2 == "num") else "num"
 
 
-def comparar_tipos(t1, t2, linea):
+def comparar_tipos(t1, t2, linea, operador=None):
     """Solo se comparan cosas del mismo tipo (un número suelto se puede comparar con dinero)."""
+    if "cadena" in (t1, t2) and t1 == t2 and operador not in (None, "==", "!="):
+        raise ErrorDeTipo(f"Línea {linea}: el texto solo se compara con == o !=, no con {operador}")
     if t1 == t2 or {t1, t2} == {"num", "dinero"}:
         return
     raise ErrorDeTipo(f"Línea {linea}: no se puede comparar {NOMBRE_DE_TIPO[t1]} con {NOMBRE_DE_TIPO[t2]}")
@@ -122,6 +128,17 @@ def primera_linea(n):
 
 def evaluar(n, venta, notas):
     """Regresa (val, tipo) del nodo n, y anota el resultado de cada nodo en notas[id(n)]."""
+    if n.nombre == "Llamada":
+        # (v4) llamada a una función predefinida: se evalúan los datos y luego se aplica la función
+        nombre, linea = n.token[1], n.token[2]
+        datos = [evaluar(h, venta, notas) for h in n.hijos]
+        parametros, regresa, _ = FUNCIONES[nombre]
+        for k, ((_, t), pedido) in enumerate(zip(datos, parametros), 1):
+            if t != INTERNO[pedido]:
+                raise ErrorDeTipo(f"Línea {linea}: el dato {k} de '{nombre}' debe ser {pedido}")
+        val, t = CALCULO[nombre](*[d for d, _ in datos]), INTERNO[regresa]
+        notas[id(n)] = (val, t)
+        return val, t
     if not n.hijos:
         # TODO 1: hoja (Factor). n.token = (tipo, lexema, línea)
         tipo, lex, linea = n.token
@@ -154,7 +171,7 @@ def evaluar(n, venta, notas):
 def arbol_anotado(n, notas, prefijo="", es_ultimo=True, es_raiz=True):
     """Dibuja el árbol con el valor de cada atributo en cada nodo."""
     val, tipo = notas[id(n)]
-    nombre = n.token[1] if not n.hijos else n.nombre
+    nombre = f"{n.token[1]}()" if n.nombre == "Llamada" else (n.token[1] if not n.hijos else n.nombre)
     etiqueta = f"{nombre}   [val = {mostrar(val, tipo)}, tipo = {tipo}]"
     if es_raiz:
         salida, prefijo_hijos = [etiqueta], ""
@@ -175,7 +192,7 @@ def evaluar_cond(n, venta, notas):
         raise ErrorDeTipo(f"Línea {linea}: la venta no trae el dato '{nombre}'")
     a, ta = venta[nombre]
     b, tb = evaluar(valor.hijos[0], venta, notas)
-    comparar_tipos(ta, tb, linea)
+    comparar_tipos(ta, tb, linea, oprel.hijos[0].token[1])
     return COMPARACIONES[oprel.hijos[0].token[0]](a, b)
 
 
@@ -203,6 +220,8 @@ def ejecutar_accion(n, venta, salida, anotar):
 
 def ejecutar_regla(n, venta, salida, anotar):
     hijo = n.hijos[0]
+    if hijo.nombre == "Decl":                                  # (v3) una declaración no se ejecuta: solo presenta el dato
+        return
     if hijo.nombre == "Si":
         if evaluar_cond(hijo.hijos[1], venta, {}):
             ejecutar_accion(hijo.hijos[3], venta, salida, anotar)
@@ -252,7 +271,7 @@ def main():
         sys.stdout.reconfigure(encoding="utf-8")
     except AttributeError:
         pass
-    venta = {k: (float(v), t) for k, (v, t) in VENTAS[nombre_venta].items()}
+    venta = {k: (v if t == "cadena" else float(v), t) for k, (v, t) in VENTAS[nombre_venta].items()}
     r = analizar(leer_archivo(args[0]))
 
     print(f"Venta de prueba ({nombre_venta}): " + ", ".join(f"{k} = {mostrar(v, t)}" for k, (v, t) in venta.items()))

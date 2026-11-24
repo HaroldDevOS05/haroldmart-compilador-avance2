@@ -3,8 +3,8 @@
 pruebas_cruzadas.py - Comprobaciones automáticas del Avance 3 (compara unas piezas contra otras)
 Compiladores (IDS601) - UNEDL 2026B
 
-  1. PARSER vs TABLA LL(1): genera programas al azar con la gramática v2, los reescribe como texto y comprueba que
-     el parser recursivo descendente (parser_v2) y un parser dirigido por la tabla LL(1) (la de verificar_gramatica)
+  1. PARSER vs TABLA LL(1): genera programas al azar con la gramática v4, los reescribe como texto y comprueba que
+     el parser recursivo descendente (parser_v4, con declaraciones y llamadas) y un parser dirigido por la tabla LL(1) (la de verificar_gramatica)
      los aceptan los dos, sin errores.  También con un token cambiado al azar: los dos deben rechazarlo.
   2. ESQUEMA vs ÁRBOL: la postfija del esquema de traducción (una pasada) = la postfija del árbol.
   3. TRES DIRECCIONES vs EVALUADOR: se ejecuta el código de tres direcciones con una máquina pequeña y las
@@ -16,15 +16,16 @@ import random
 import sys
 
 from verificar_gramatica import TU_GRAMATICA, first_follow, EPS
-from parser_v2 import analizar, leer_archivo
+from parser_v4 import analizar, leer_archivo
 from escaner_v2 import escanear
 from codigo_intermedio import TresDirecciones
+from funciones import CALCULO
 from evaluar_atributos import aplicar_promociones, VENTAS, OPERACIONES, COMPARACIONES
 from esquema_traduccion import Traductor, postfija_del_arbol
 
 LEXEMAS = {"SI": "SI", "ENTONCES": "ENTONCES", "SINO": "SINO", "MIENTRAS": "MIENTRAS", "HACER": "HACER",
            "ESCRIBIR": "ESCRIBIR", "ASIGNA": "=", "MAYOR": ">", "MENOR": "<", "MAYORIGUAL": ">=", "MENORIGUAL": "<=",
-           "NUM": "7", "PRECIO": "$30", "PORC": "5%", "CADENA": '"hola"', "ID": "x", "MAS": "+", "MENOS": "-",
+           "TIPO": "dinero", "COMA": ",", "IGUAL": "==", "DIFERENTE": "!=", "NUM": "7", "PRECIO": "$30", "PORC": "5%", "CADENA": '"hola"', "ID": "x", "MAS": "+", "MENOS": "-",
            "POR": "*", "ENTRE": "/", "PARIZQ": "(", "PARDER": ")"}
 
 
@@ -95,6 +96,8 @@ def prueba_esquema():
 def valor_de(x, mem):
     if x in mem:
         return mem[x]
+    if x.startswith('"'):
+        return x[1:-1]
     if x.startswith("$"):
         return float(x[1:])
     if x.endswith("%"):
@@ -105,10 +108,13 @@ def valor_de(x, mem):
 def ejecutar_3d(codigo, mem):
     lineas = [l.strip() for l in codigo]
     etiquetas = {l[:-1]: i for i, l in enumerate(lineas) if l.endswith(":")}
-    pc, pasos = 0, 0
+    pc, pasos, params = 0, 0, []
     while pc < len(lineas) and pasos < 10000:
         l, pc, pasos = lineas[pc], pc + 1, pasos + 1
         p = l.split()
+        if p[0] == "param":
+            params.append(valor_de(p[1], mem))
+            continue
         if l.endswith(":") or p[0] == "escribir":
             continue
         if p[0] == "goto":
@@ -116,14 +122,25 @@ def ejecutar_3d(codigo, mem):
         elif p[0] == "ifFalse":
             a, op, b = p[1:4]
             ops = {">": COMPARACIONES["MAYOR"], "<": COMPARACIONES["MENOR"],
-                   ">=": COMPARACIONES["MAYORIGUAL"], "<=": COMPARACIONES["MENORIGUAL"]}
+                   ">=": COMPARACIONES["MAYORIGUAL"], "<=": COMPARACIONES["MENORIGUAL"],
+                   "==": COMPARACIONES["IGUAL"], "!=": COMPARACIONES["DIFERENTE"]}
             if not ops[op](valor_de(a, mem), valor_de(b, mem)):
                 pc = etiquetas[p[5]]
+        elif len(p) == 5 and p[2] == "call":                      # t = call función, n  (los n últimos «param»)
+            n = int(p[4])
+            datos, params[:] = params[len(params) - n:], params[:len(params) - n]
+            mem[p[0]] = CALCULO[p[3].rstrip(",")](*datos)
         elif len(p) == 5:
             mem[p[0]] = OPERACIONES[p[3]](valor_de(p[2], mem), valor_de(p[4], mem))
-        else:
-            mem[p[0]] = valor_de(p[2], mem)
+        else:                                                     # x = y   (el lado derecho puede ser una cadena con espacios)
+            mem[p[0]] = valor_de(l.split(" = ", 1)[1], mem)
     return mem
+
+
+def iguales(x, y):
+    if isinstance(x, str) or isinstance(y, str):
+        return x == y
+    return abs(x - y) < 1e-9
 
 
 def prueba_tres_direcciones(ruta="pruebas/promos_v2.txt"):
@@ -134,9 +151,10 @@ def prueba_tres_direcciones(ruta="pruebas/promos_v2.txt"):
         codigo += g.regla(regla)
     resultados = []
     for nombre, venta in VENTAS.items():
-        mem = ejecutar_3d(codigo, {k: float(v) for k, (v, _) in venta.items()})
-        _, _, final = aplicar_promociones(r.arbol, {k: (float(v), t) for k, (v, t) in venta.items()}, salida=lambda *_: None)
-        difs = [k for k, (v, _) in final.items() if abs(mem.get(k, float("nan")) - v) > 1e-9]
+        inicial = {k: (v if t == "cadena" else float(v), t) for k, (v, t) in venta.items()}
+        mem = ejecutar_3d(codigo, {k: v for k, (v, _) in inicial.items()})
+        _, _, final = aplicar_promociones(r.arbol, inicial, salida=lambda *_: None)
+        difs = [k for k, (v, _) in final.items() if k not in mem or not iguales(mem[k], v)]
         resultados.append((nombre, difs, len(final)))
     return resultados
 
@@ -153,9 +171,11 @@ def main():
     difs, total = prueba_esquema()
     print(f"2. Esquema de traducción vs postfija del árbol: {total - len(difs)}/{total} iguales")
     fallos += len(difs)
-    for nombre, d, total in prueba_tres_direcciones():
-        print(f"3. Tres direcciones ejecutado vs evaluador (venta {nombre}): {total - len(d)}/{total} variables iguales" + (f"  ¡difieren: {d}!" if d else ""))
-        fallos += len(d)
+    for ruta in ("pruebas/promos_v2.txt", "pruebas/promos_v4.txt"):
+        for nombre, d, total in prueba_tres_direcciones(ruta):
+            print(f"3. Tres direcciones ejecutado vs evaluador ({ruta.split('/')[-1]}, venta {nombre}): {total - len(d)}/{total} variables iguales"
+                  + (f"  ¡difieren: {d}!" if d else ""))
+            fallos += len(d)
     print("\nTodo coincide." if not fallos else f"\n¡Hay {fallos} diferencias!")
     return 1 if fallos else 0
 

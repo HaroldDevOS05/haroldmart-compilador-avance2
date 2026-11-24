@@ -16,12 +16,15 @@ Uso:
 """
 import sys
 
-from parser_v2 import analizar, leer_archivo, texto_expr
+from parser_v2 import leer_archivo, texto_expr
+from parser_v4 import analizar
 from parser_con_recuperacion import lineas_de
 
 
 def postfija(n):
     """Notación postfija de una expresión del árbol (postorden: hijo izquierdo, hijo derecho, nodo)."""
+    if n.nombre == "Llamada":             # (v4) los datos en orden y luego «función/número de datos»:  a b minimo/2
+        return " ".join([postfija(h) for h in n.hijos] + [f"{n.token[1]}/{len(n.hijos)}"])
     if not n.hijos:                       # hoja: el lexema del token
         return n.token[1]
     izq, der = n.hijos
@@ -52,6 +55,14 @@ class TresDirecciones:
     # ---------- expresiones ----------
     def expr(self, n):
         # TODO 5: hoja → su lexema; operación → a = expr(izq), b = expr(der), t = temporal, «t = a op b».
+        if n.nombre == "Llamada":
+            # (v4) primero cada dato (su código y un «param»), luego «t = call función, cuántos datos»
+            lugares = [self.expr(h) for h in n.hijos]
+            for lugar in lugares:
+                self.emitir(f"param {lugar}")
+            t = self.temporal()
+            self.emitir(f"{t} = call {n.token[1]}, {len(lugares)}")
+            return t
         if not n.hijos:
             return n.token[1]
         a = self.expr(n.hijos[0])
@@ -117,7 +128,9 @@ class TresDirecciones:
         """Traduce UNA regla y regresa sus renglones."""
         self.codigo = []
         hijo = n.hijos[0]
-        if hijo.nombre == "Si":
+        if hijo.nombre == "Decl":
+            pass                          # una declaración no genera código: solo presenta el dato
+        elif hijo.nombre == "Si":
             self.si(hijo)
         elif hijo.nombre == "Mientras":
             self.mientras(hijo)
@@ -131,7 +144,7 @@ class TresDirecciones:
 def expresiones_con_operaciones(nodo):
     """Recorre el árbol en orden y regresa (línea, nodo-expresión) de cada Valor que tiene operaciones."""
     encontradas = []
-    if nodo.nombre == "Valor" and nodo.hijos[0].hijos:
+    if nodo.nombre == "Valor" and (nodo.hijos[0].hijos or nodo.hijos[0].nombre == "Llamada"):
         e = nodo.hijos[0]
         encontradas.append((min(lineas_de(e)), e))
     for h in nodo.hijos:
@@ -164,8 +177,11 @@ def main():
     print("\n== Código de tres direcciones (un solo generador: t1, t2... y L1, L2... no se repiten) ==")
     g = TresDirecciones()
     for regla in r.arbol.hijos:
+        codigo = g.regla(regla)
+        if not codigo:                    # las declaraciones no generan código
+            continue
         print(f"Línea {min(lineas_de(regla))}: {texto_de_la_regla(regla, fuente)}")
-        print("\n".join(g.regla(regla)))
+        print("\n".join(codigo))
     if r.errores:
         print(f"\nNota: el archivo tiene {len(r.errores)} errores; solo se tradujeron las reglas que sí se reconocieron.")
     return 1 if r.errores else 0

@@ -1,0 +1,15 @@
+Nombre             Tipo        Clase             Declarada  Asignada en  Usada en
+total_compra       dinero      dato de la venta  3          —            19, 21, 25
+km                 numero      dato de la venta  4          —            21
+piezas             numero      dato de la venta  5          —            23, 24
+edad               numero      dato de la venta  6          —            28
+puntos             numero      dato y resultado  7          30           30
+tasa_adulto        porcentaje  resultado         9          27           28
+descuento          dinero      resultado         10         19           25, 33
+envio              dinero      resultado         11         21           25
+precio_unitario    dinero      resultado         12         23           24
+cotizacion         dinero      resultado         13         24           —
+pago               dinero      resultado         14         25           28
+descuento_adulto   dinero      resultado         15         28           —
+mensaje            texto       resultado         16         32           33
+Total: 13 variables

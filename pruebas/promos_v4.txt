@@ -1,0 +1,36 @@
+// Promociones de Haroldmart, versión FINAL: declaraciones, funciones predefinidas e igualdad
+// Datos que manda la caja (datos de la venta)
+dinero total_compra
+numero km
+numero piezas
+numero edad
+numero puntos
+texto tipo_cliente
+// Datos que calculan las reglas (resultados)
+porcentaje tasa
+dinero descuento
+dinero envio
+dinero precio_unitario
+dinero cotizacion
+dinero pago
+dinero ahorro
+texto mensaje
+
+// 1) Descuento por monto: 5% si la compra pasa de $1000. Clientes frecuentes (igualdad ==) 10%
+tasa = 5%
+SI tipo_cliente == "frecuente" ENTONCES tasa = 10%
+SI total_compra > $1000 ENTONCES descuento = redondear(total_compra * tasa) SINO descuento = $0
+// 2) Envío gratis desde $500; si no, $2 por kilómetro más una cuota fija de $30
+SI total_compra >= $500 ENTONCES envio = $0 SINO envio = km * 2 + $30
+// 3) Cotización de mayoreo (más de 100 piezas) y pago final con tope de ahorro
+SI piezas > 100 ENTONCES precio_unitario = $8.50 SINO precio_unitario = $10
+cotizacion = precio_unitario * piezas
+ahorro = minimo(redondear(total_compra * tasa), $150)
+pago = aplicar_descuento(total_compra, tasa) + envio
+// 4) Adultos mayores: 15% de descuento sobre el pago
+SI edad >= 60 ENTONCES pago = aplicar_descuento(pago, 15%)
+// 5) Monedero Haroldmart: se canjean 100 puntos por vuelta
+MIENTRAS puntos > 100 HACER puntos = puntos - 100
+// 6) Mensaje para el cajero (los clientes que NO son de mostrador)
+mensaje = "Promoción aplicada"
+SI tipo_cliente != "mostrador" ENTONCES ESCRIBIR mensaje

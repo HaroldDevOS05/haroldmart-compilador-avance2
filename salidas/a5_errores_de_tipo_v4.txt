@@ -1,0 +1,11 @@
+Fase 1 · Léxico:        58 tokens, 0 error(es)
+Fase 2 · Sintaxis:      14 reglas, 0 error(es)
+Fase 3 · Declaraciones: 6 variables, 2 funciones, 0 error(es)
+Fase 4 · Tipos:         6 error(es)
+  [tipos] Línea 8: error de tipo, no se puede sumar porcentaje con dinero
+  [tipos] Línea 9: error de tipo, 'descuento' es dinero y le quieres guardar porcentaje
+  [tipos] Línea 10: error de tipo, 'envio' es dinero y le quieres guardar texto
+  [tipos] Línea 11: error de tipo, no se puede comparar texto con numero
+  [tipos] Línea 12: error de tipo, el dato 1 de 'redondear' debe ser dinero y es porcentaje
+  [tipos] Línea 13: error de tipo, no se puede multiplicar dinero por dinero
+RESULTADO: 6 error(es) en total

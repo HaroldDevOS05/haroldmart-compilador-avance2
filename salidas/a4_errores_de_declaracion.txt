@@ -1,0 +1,16 @@
+Nombre             Tipo        Clase             Declarada  Asignada en  Usada en
+total_compra       dinero      dato de la venta  2          —            6, 7, 8
+km                 numero      dato de la venta  3          —            7
+descuento          porcentaje  resultado         4          6            —
+envio              ?           resultado         —          7            8
+descuento_adulto   ?           dato de la venta  —          —            8
+pago               ?           resultado         —          8            —
+puntos             numero      dato de la venta  9          —            11
+ahorro             dinero      resultado         10         11           —
+edad               dinero      dato de la venta  12         —            13
+Total: 9 variables
+Error: Línea 5: 'total_compra' ya estaba declarada en la línea 2
+Error: Línea 7: 'envio' se usa sin declarar (¿falta «dinero envio»?)
+Error: Línea 8: 'descuento_adulto' se usa sin declarar (¿falta «dinero descuento_adulto»?)
+Error: Línea 8: 'pago' se usa sin declarar (¿falta «dinero pago»?)
+Error: Línea 11: 'ahorro' se declaró como dinero pero recibe numero (puntos * 2)

@@ -1,4 +1,4 @@
-Venta de prueba (grande): total_compra = $1200, km = 4, piezas = 120, edad = 65, puntos = 250
+Venta de prueba (grande): total_compra = $1200, km = 4, piezas = 120, edad = 65, puntos = 250, tipo_cliente = "frecuente"
 
 Aplicando las promociones:
   Error de tipo: Línea 2: no se puede sumar un porcentaje con dinero

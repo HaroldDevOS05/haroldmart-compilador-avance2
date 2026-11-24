@@ -1,0 +1,45 @@
+Venta de prueba (grande): total_compra = $1200, km = 4, piezas = 120, edad = 65, puntos = 250, tipo_cliente = "frecuente"
+
+Aplicando las promociones:
+  línea 20: tasa = 5% (porc)
+  línea 21: tasa = 10% (porc)
+  línea 22: descuento = $120 (dinero)
+        redondear()   [val = $120, tipo = dinero]
+        └─ *   [val = $120, tipo = dinero]
+           ├─ total_compra   [val = $1200, tipo = dinero]
+           └─ tasa   [val = 10%, tipo = porc]
+  línea 24: envio = $0 (dinero)
+  línea 26: precio_unitario = $8.5 (dinero)
+  línea 27: cotizacion = $1020 (dinero)
+        *   [val = $1020, tipo = dinero]
+        ├─ precio_unitario   [val = $8.5, tipo = dinero]
+        └─ piezas   [val = 120, tipo = num]
+  línea 28: ahorro = $120 (dinero)
+        minimo()   [val = $120, tipo = dinero]
+        ├─ redondear()   [val = $120, tipo = dinero]
+        │  └─ *   [val = $120, tipo = dinero]
+        │     ├─ total_compra   [val = $1200, tipo = dinero]
+        │     └─ tasa   [val = 10%, tipo = porc]
+        └─ $150   [val = $150, tipo = dinero]
+  línea 29: pago = $1080 (dinero)
+        +   [val = $1080, tipo = dinero]
+        ├─ aplicar_descuento()   [val = $1080, tipo = dinero]
+        │  ├─ total_compra   [val = $1200, tipo = dinero]
+        │  └─ tasa   [val = 10%, tipo = porc]
+        └─ envio   [val = $0, tipo = dinero]
+  línea 31: pago = $918 (dinero)
+        aplicar_descuento()   [val = $918, tipo = dinero]
+        ├─ pago   [val = $1080, tipo = dinero]
+        └─ 15%   [val = 15%, tipo = porc]
+  línea 33: puntos = 150 (num)
+        -   [val = 150, tipo = num]
+        ├─ puntos   [val = 250, tipo = num]
+        └─ 100   [val = 100, tipo = num]
+  línea 33: puntos = 50 (num)
+        -   [val = 50, tipo = num]
+        ├─ puntos   [val = 150, tipo = num]
+        └─ 100   [val = 100, tipo = num]
+  línea 35: mensaje = "Promoción aplicada" (cadena)
+  línea 36: ESCRIBIR "Promoción aplicada"
+
+Reglas ejecutadas: 26 · errores de tipo: 0

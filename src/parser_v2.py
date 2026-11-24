@@ -87,6 +87,8 @@ def imprimir_arbol(nodo):
 
 def texto_expr(n, padre=0, es_derecho=False):
     """Escribe una expresión del árbol otra vez en forma normal (infija), con los paréntesis mínimos."""
+    if n.nombre == "Llamada":
+        return f"{n.token[1]}(" + ", ".join(texto_expr(h) for h in n.hijos) + ")"
     if not n.hijos:
         return n.token[1]
     p = PRECEDENCIA[n.nombre]
@@ -94,11 +96,13 @@ def texto_expr(n, padre=0, es_derecho=False):
     return f"({s})" if (p < padre or (p == padre and es_derecho)) else s
 
 
-def analizar(texto):
-    """Escáner v2 + parser con recuperación. Junta los errores léxicos y sintácticos (ordenados por línea).
-    Regresa un objeto con: arbol, errores, n_lexicos, n_sintacticos, omitidos, reconocidas, errores_lexicos."""
-    tokens, errores_lexicos = leer_tokens(texto)
-    parser = ParserConExpresiones(tokens)
+def analizar(texto, leer=None, clase_parser=None):
+    """Escáner v2 + parser con recuperación. Junta los errores léxicos y sintácticos (ordenados por línea;
+    en el mismo renglón los léxicos van primero porque pueden causar los de sintaxis).
+    Regresa un objeto con: arbol, errores, n_lexicos, n_sintacticos, omitidos, reconocidas, errores_lexicos.
+    «leer» y «clase_parser» permiten reutilizar esta función con el escáner y el parser de otra versión (parser_v3.py)."""
+    tokens, errores_lexicos = (leer or leer_tokens)(texto)
+    parser = (clase_parser or ParserConExpresiones)(tokens)
     arbol = parser.programa()
     lineas_lexicas = {linea for linea, _ in errores_lexicos}
     # una regla cuenta como reconocida si no tiene ningún símbolo con error léxico en sus renglones

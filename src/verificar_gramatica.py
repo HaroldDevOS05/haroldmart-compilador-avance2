@@ -4,7 +4,7 @@ Basado en verificar_base.py del profesor (paso 6 del ejemplo de la papelería).
 
 Verifica la gramática: ¿tiene recursión izquierda? ¿conflictos LL(1)? ¿conflictos SLR (LR)?
 
-La gramática FINAL es la versión 2 (con operaciones + - * / y paréntesis, Avance 3). La versión 1
+La gramática FINAL es la versión 4 (con operaciones + - * / y paréntesis, Avance 3). La versión 1
 (Avance 2, sin operaciones) se conserva para comparar, y se agregan tres versiones «malas» a propósito
 (A, B y C) para ver cuántos conflictos LL(1) y SLR tiene cada una.
 
@@ -16,12 +16,13 @@ import sys
 
 EPS = "ε"
 
-# ---------------- MI GRAMÁTICA v2 (versión final, LL(1)) ----------------
+# ---------------- MI GRAMÁTICA v4 (versión FINAL, LL(1)): la v3 + llamadas a funciones + igualdad ----------------
 # Una regla por renglón: ("LadoIzquierdo", [símbolos del lado derecho]).  [] = ε (vacío).
-# Los terminales se llaman igual que los tipos de token de mi escáner (SI, ID, NUM, PRECIO, PORC, MAS, ...).
+# Los terminales se llaman igual que los tipos de token de mi escáner (SI, ID, NUM, PRECIO, PORC, MAS, COMA, IGUAL, ...).
 TU_GRAMATICA = [
     ("Programa", ["Regla", "Programa"]), ("Programa", []),
-    ("Regla", ["Si"]), ("Regla", ["Mientras"]), ("Regla", ["Asig"]), ("Regla", ["Escribir"]),
+    ("Regla", ["Decl"]), ("Regla", ["Si"]), ("Regla", ["Mientras"]), ("Regla", ["Asig"]), ("Regla", ["Escribir"]),
+    ("Decl", ["TIPO", "ID"]),          # v3: dinero total_compra   (TIPO = numero | dinero | porcentaje | texto)
     ("Si", ["SI", "Cond", "ENTONCES", "Accion", "Sino"]),
     ("Sino", ["SINO", "Accion"]), ("Sino", []),
     ("Mientras", ["MIENTRAS", "Cond", "HACER", "Accion"]),
@@ -30,19 +31,37 @@ TU_GRAMATICA = [
     ("Escribir", ["ESCRIBIR", "Valor"]),
     ("Cond", ["ID", "Oprel", "Valor"]),
     ("Oprel", ["MAYOR"]), ("Oprel", ["MENOR"]), ("Oprel", ["MAYORIGUAL"]), ("Oprel", ["MENORIGUAL"]),
-    # --- NUEVO en la versión 2: un valor ahora es una expresión (la precedencia está en la estructura) ---
+    ("Oprel", ["IGUAL"]), ("Oprel", ["DIFERENTE"]),                      # NUEVO en la v4: == y !=
+    # --- v2: un valor es una expresión (la precedencia está en la estructura) ---
     ("Valor", ["Expr"]),
     ("Expr", ["Term", "ExprR"]),
     ("ExprR", ["MAS", "Term", "ExprR"]), ("ExprR", ["MENOS", "Term", "ExprR"]), ("ExprR", []),
     ("Term", ["Factor", "TermR"]),
     ("TermR", ["POR", "Factor", "TermR"]), ("TermR", ["ENTRE", "Factor", "TermR"]), ("TermR", []),
     ("Factor", ["NUM"]), ("Factor", ["PRECIO"]), ("Factor", ["PORC"]), ("Factor", ["CADENA"]),
-    ("Factor", ["ID"]), ("Factor", ["PARIZQ", "Expr", "PARDER"]),
+    ("Factor", ["ID", "Llamada"]), ("Factor", ["PARIZQ", "Expr", "PARDER"]),
+    # --- NUEVO en la v4: llamada a una función predefinida, FACTORIZADA (variable e id(...) empiezan igual) ---
+    ("Llamada", ["PARIZQ", "Args", "PARDER"]), ("Llamada", []),
+    ("Args", ["Expr", "ArgsR"]), ("Args", []),
+    ("ArgsR", ["COMA", "Expr", "ArgsR"]), ("ArgsR", []),
 ]
 
-# Versión 1 (Avance 2): un valor es solo NUM, PRECIO o CADENA (sin operaciones)
-GRAMATICA_V1 = [r for r in TU_GRAMATICA if r[0] not in ("Valor", "Expr", "ExprR", "Term", "TermR", "Factor")] + [
+# Versión 3 (Entrega final, día 1): la v4 sin llamadas ni igualdad
+GRAMATICA_V3 = [r for r in TU_GRAMATICA if r[0] not in ("Llamada", "Args", "ArgsR")
+                and r not in (("Oprel", ["IGUAL"]), ("Oprel", ["DIFERENTE"]))]
+GRAMATICA_V3 = [("Factor", ["ID"]) if r == ("Factor", ["ID", "Llamada"]) else r for r in GRAMATICA_V3]
+
+# Versión 2 (Avance 3): la v3 sin declaraciones
+GRAMATICA_V2 = [r for r in GRAMATICA_V3 if r not in (("Regla", ["Decl"]), ("Decl", ["TIPO", "ID"]))]
+
+# Versión 1 (Avance 2): un valor es solo NUM, PRECIO o CADENA (sin operaciones ni declaraciones)
+GRAMATICA_V1 = [r for r in GRAMATICA_V2 if r[0] not in ("Valor", "Expr", "ExprR", "Term", "TermR", "Factor")] + [
     ("Valor", ["NUM"]), ("Valor", ["PRECIO"]), ("Valor", ["CADENA"]),
+]
+
+# VERSIÓN D (Entrega final): la llamada SIN factorizar: Factor → ID | ID ( Args )  →  conflicto FIRST/FIRST en [Factor, ID]
+LLAMADA_SIN_FACTORIZAR = [r for r in TU_GRAMATICA if r[0] not in ("Llamada",) and r != ("Factor", ["ID", "Llamada"])] + [
+    ("Factor", ["ID"]), ("Factor", ["ID", "PARIZQ", "Args", "PARDER"]),
 ]
 
 # AHORA TÚ 2 (Avance 2): versión A, con recursión izquierda en la lista de reglas (Programa → Programa Regla)
@@ -63,11 +82,14 @@ EXPR_RECURSIVA = EXPR_RECURSIVA[:EXPR_RECURSIVA.index(("Factor", ["NUM"]))] + [
 ] + EXPR_RECURSIVA[EXPR_RECURSIVA.index(("Factor", ["NUM"])):]
 
 GRAMATICAS = [
-    ("MI GRAMÁTICA v2 (final, con operaciones)", TU_GRAMATICA),
+    ("MI GRAMÁTICA v4 (final, con llamadas a funciones e igualdad)", TU_GRAMATICA),
+    ("Versión 3 (Entrega final día 1, con declaraciones)", GRAMATICA_V3),
+    ("Versión 2 (Avance 3, con operaciones, sin declaraciones)", GRAMATICA_V2),
     ("Versión 1 (Avance 2, sin operaciones)", GRAMATICA_V1),
     ("VERSIÓN A: con recursión izquierda en la lista de reglas (Programa → Programa Regla)", CON_RECURSION_IZQUIERDA),
     ("VERSIÓN B: sin factorizar el SINO (dos reglas Si que empiezan igual)", SIN_FACTORIZAR),
     ("VERSIÓN C: Expr con recursión izquierda (Expr → Expr + Term, Term → Term * Factor)", EXPR_RECURSIVA),
+    ("VERSIÓN D: llamada sin factorizar (Factor → ID | ID ( Args ))", LLAMADA_SIN_FACTORIZAR),
 ]
 
 

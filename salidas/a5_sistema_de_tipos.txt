@@ -1,0 +1,5 @@
+  +   numero + numero → numero  ·  numero + dinero → dinero  ·  dinero + numero → dinero  ·  dinero + dinero → dinero  ·  porcentaje + porcentaje → porcentaje
+  -   numero - numero → numero  ·  numero - dinero → dinero  ·  dinero - numero → dinero  ·  dinero - dinero → dinero  ·  porcentaje - porcentaje → porcentaje
+  *   numero * numero → numero  ·  numero * dinero → dinero  ·  numero * porcentaje → numero  ·  dinero * numero → dinero  ·  dinero * porcentaje → dinero  ·  porcentaje * numero → numero  ·  porcentaje * dinero → dinero  ·  porcentaje * porcentaje → porcentaje
+  /   numero / numero → numero  ·  numero / porcentaje → numero  ·  dinero / numero → dinero  ·  dinero / dinero → numero  ·  dinero / porcentaje → dinero  ·  porcentaje / numero → porcentaje  ·  porcentaje / porcentaje → numero
+  (el texto no se opera con nada; cualquier combinación que no está en la lista es un error de tipo)

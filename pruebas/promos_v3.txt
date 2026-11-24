@@ -1,0 +1,33 @@
+// Promociones de Haroldmart, versión 3: primero se DECLARAN los datos y su tipo, luego van las reglas
+// Datos que manda la caja (datos de la venta)
+dinero total_compra
+numero km
+numero piezas
+numero edad
+numero puntos
+// Datos que calculan las reglas (resultados)
+porcentaje tasa_adulto
+dinero descuento
+dinero envio
+dinero precio_unitario
+dinero cotizacion
+dinero pago
+dinero descuento_adulto
+texto mensaje
+
+// 1) Descuento por monto: 5% si la compra pasa de $1000
+SI total_compra > $1000 ENTONCES descuento = total_compra * 5% SINO descuento = $0
+// 2) Envío gratis desde $500; si no, $2 por kilómetro más una cuota fija de $30
+SI total_compra >= $500 ENTONCES envio = $0 SINO envio = km * 2 + $30
+// 3) Cotización de mayoreo (más de 100 piezas) y pago final
+SI piezas > 100 ENTONCES precio_unitario = $8.50 SINO precio_unitario = $10
+cotizacion = precio_unitario * piezas
+pago = (total_compra - descuento) + envio
+// 4) Adultos mayores con credencial: 15% sobre el pago
+tasa_adulto = 15%
+SI edad >= 60 ENTONCES descuento_adulto = pago * tasa_adulto
+// 5) Monedero Haroldmart: se canjean 100 puntos por vuelta
+MIENTRAS puntos > 100 HACER puntos = puntos - 100
+// 6) Mensaje para el cajero
+mensaje = "Promoción aplicada"
+SI descuento > $0 ENTONCES ESCRIBIR mensaje

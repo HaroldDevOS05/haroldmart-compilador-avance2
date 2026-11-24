@@ -1,0 +1,166 @@
+== MI GRAMÁTICA v4 (final, con llamadas a funciones e igualdad) (44 reglas)
+   Recursión izquierda: no
+   Conflictos LL(1):    0
+   Conflictos SLR:      0 (en 72 estados)
+   → SIRVE para nuestro parser LL(1) · SIRVE para SLR
+== Versión 3 (Entrega final día 1, con declaraciones) (36 reglas)
+   Recursión izquierda: no
+   Conflictos LL(1):    0
+   Conflictos SLR:      0 (en 61 estados)
+   → SIRVE para nuestro parser LL(1) · SIRVE para SLR
+== Versión 2 (Avance 3, con operaciones, sin declaraciones) (34 reglas)
+   Recursión izquierda: no
+   Conflictos LL(1):    0
+   Conflictos SLR:      0 (en 58 estados)
+   → SIRVE para nuestro parser LL(1) · SIRVE para SLR
+== Versión 1 (Avance 2, sin operaciones) (22 reglas)
+   Recursión izquierda: no
+   Conflictos LL(1):    0
+   Conflictos SLR:      0 (en 36 estados)
+   → SIRVE para nuestro parser LL(1) · SIRVE para SLR
+== VERSIÓN A: con recursión izquierda en la lista de reglas (Programa → Programa Regla) (44 reglas)
+   Recursión izquierda: Programa
+   Conflictos LL(1):    5
+      celda [Programa, ESCRIBIR]: reglas 1, 2
+      celda [Programa, ID]: reglas 1, 2
+      celda [Programa, MIENTRAS]: reglas 1, 2
+   Conflictos SLR:      0 (en 71 estados)
+   → NO sirve para LL(1) · SIRVE para SLR
+== VERSIÓN B: sin factorizar el SINO (dos reglas Si que empiezan igual) (43 reglas)
+   Recursión izquierda: no
+   Conflictos LL(1):    1
+      celda [Si, SI]: reglas 42, 43
+   Conflictos SLR:      0 (en 71 estados)
+   → NO sirve para LL(1) · SIRVE para SLR
+== VERSIÓN C: Expr con recursión izquierda (Expr → Expr + Term, Term → Term * Factor) (42 reglas)
+   Recursión izquierda: Expr, Term
+   Conflictos LL(1):    12
+      celda [Expr, CADENA]: reglas 25, 26, 27
+      celda [Expr, ID]: reglas 25, 26, 27
+      celda [Expr, NUM]: reglas 25, 26, 27
+   Conflictos SLR:      0 (en 66 estados)
+   → NO sirve para LL(1) · SIRVE para SLR
+== VERSIÓN D: llamada sin factorizar (Factor → ID | ID ( Args )) (43 reglas)
+   Recursión izquierda: no
+   Conflictos LL(1):    1
+      celda [Factor, ID]: reglas 42, 43
+   Conflictos SLR:      0 (en 71 estados)
+   → NO sirve para LL(1) · SIRVE para SLR
+
+======================================================================
+DOCUMENTACIÓN DE MI GRAMÁTICA FINAL
+======================================================================
+Reglas numeradas:
+   1. Programa → Regla Programa
+   2. Programa → ε
+   3. Regla → Decl
+   4. Regla → Si
+   5. Regla → Mientras
+   6. Regla → Asig
+   7. Regla → Escribir
+   8. Decl → TIPO ID
+   9. Si → SI Cond ENTONCES Accion Sino
+  10. Sino → SINO Accion
+  11. Sino → ε
+  12. Mientras → MIENTRAS Cond HACER Accion
+  13. Accion → Asig
+  14. Accion → Escribir
+  15. Asig → ID ASIGNA Valor
+  16. Escribir → ESCRIBIR Valor
+  17. Cond → ID Oprel Valor
+  18. Oprel → MAYOR
+  19. Oprel → MENOR
+  20. Oprel → MAYORIGUAL
+  21. Oprel → MENORIGUAL
+  22. Oprel → IGUAL
+  23. Oprel → DIFERENTE
+  24. Valor → Expr
+  25. Expr → Term ExprR
+  26. ExprR → MAS Term ExprR
+  27. ExprR → MENOS Term ExprR
+  28. ExprR → ε
+  29. Term → Factor TermR
+  30. TermR → POR Factor TermR
+  31. TermR → ENTRE Factor TermR
+  32. TermR → ε
+  33. Factor → NUM
+  34. Factor → PRECIO
+  35. Factor → PORC
+  36. Factor → CADENA
+  37. Factor → ID Llamada
+  38. Factor → PARIZQ Expr PARDER
+  39. Llamada → PARIZQ Args PARDER
+  40. Llamada → ε
+  41. Args → Expr ArgsR
+  42. Args → ε
+  43. ArgsR → COMA Expr ArgsR
+  44. ArgsR → ε
+
+FIRST:
+  FIRST(Programa) = { TIPO, ID, SI, MIENTRAS, ESCRIBIR, ε }
+  FIRST(Regla) = { TIPO, ID, SI, MIENTRAS, ESCRIBIR }
+  FIRST(Decl) = { TIPO }
+  FIRST(Si) = { SI }
+  FIRST(Sino) = { SINO, ε }
+  FIRST(Mientras) = { MIENTRAS }
+  FIRST(Accion) = { ID, ESCRIBIR }
+  FIRST(Asig) = { ID }
+  FIRST(Escribir) = { ESCRIBIR }
+  FIRST(Cond) = { ID }
+  FIRST(Oprel) = { MAYOR, MENOR, MAYORIGUAL, MENORIGUAL, IGUAL, DIFERENTE }
+  FIRST(Valor) = { ID, NUM, PRECIO, PORC, CADENA, PARIZQ }
+  FIRST(Expr) = { ID, NUM, PRECIO, PORC, CADENA, PARIZQ }
+  FIRST(ExprR) = { MAS, MENOS, ε }
+  FIRST(Term) = { ID, NUM, PRECIO, PORC, CADENA, PARIZQ }
+  FIRST(TermR) = { POR, ENTRE, ε }
+  FIRST(Factor) = { ID, NUM, PRECIO, PORC, CADENA, PARIZQ }
+  FIRST(Llamada) = { PARIZQ, ε }
+  FIRST(Args) = { ID, NUM, PRECIO, PORC, CADENA, PARIZQ, ε }
+  FIRST(ArgsR) = { COMA, ε }
+
+FOLLOW:
+  FOLLOW(Programa) = { $ }
+  FOLLOW(Regla) = { TIPO, ID, SI, MIENTRAS, ESCRIBIR, $ }
+  FOLLOW(Decl) = { TIPO, ID, SI, MIENTRAS, ESCRIBIR, $ }
+  FOLLOW(Si) = { TIPO, ID, SI, MIENTRAS, ESCRIBIR, $ }
+  FOLLOW(Sino) = { TIPO, ID, SI, MIENTRAS, ESCRIBIR, $ }
+  FOLLOW(Mientras) = { TIPO, ID, SI, MIENTRAS, ESCRIBIR, $ }
+  FOLLOW(Accion) = { TIPO, ID, SI, SINO, MIENTRAS, ESCRIBIR, $ }
+  FOLLOW(Asig) = { TIPO, ID, SI, SINO, MIENTRAS, ESCRIBIR, $ }
+  FOLLOW(Escribir) = { TIPO, ID, SI, SINO, MIENTRAS, ESCRIBIR, $ }
+  FOLLOW(Cond) = { ENTONCES, HACER }
+  FOLLOW(Oprel) = { ID, NUM, PRECIO, PORC, CADENA, PARIZQ }
+  FOLLOW(Valor) = { TIPO, ID, SI, ENTONCES, SINO, MIENTRAS, HACER, ESCRIBIR, $ }
+  FOLLOW(Expr) = { TIPO, ID, SI, ENTONCES, SINO, MIENTRAS, HACER, ESCRIBIR, PARDER, COMA, $ }
+  FOLLOW(ExprR) = { TIPO, ID, SI, ENTONCES, SINO, MIENTRAS, HACER, ESCRIBIR, PARDER, COMA, $ }
+  FOLLOW(Term) = { TIPO, ID, SI, ENTONCES, SINO, MIENTRAS, HACER, ESCRIBIR, MAS, MENOS, PARDER, COMA, $ }
+  FOLLOW(TermR) = { TIPO, ID, SI, ENTONCES, SINO, MIENTRAS, HACER, ESCRIBIR, MAS, MENOS, PARDER, COMA, $ }
+  FOLLOW(Factor) = { TIPO, ID, SI, ENTONCES, SINO, MIENTRAS, HACER, ESCRIBIR, MAS, MENOS, POR, ENTRE, PARDER, COMA, $ }
+  FOLLOW(Llamada) = { TIPO, ID, SI, ENTONCES, SINO, MIENTRAS, HACER, ESCRIBIR, MAS, MENOS, POR, ENTRE, PARDER, COMA, $ }
+  FOLLOW(Args) = { PARDER }
+  FOLLOW(ArgsR) = { PARDER }
+
+Tabla LL(1) (cada celda es el número de la regla a usar; vacío = error):
+
+| | TIPO | ID | SI | ENTONCES | SINO | MIENTRAS | HACER | ASIGNA | ESCRIBIR | MAYOR | MENOR | MAYORIGUAL | MENORIGUAL | IGUAL | DIFERENTE | MAS | MENOS | POR | ENTRE | NUM | PRECIO | PORC | CADENA | PARIZQ | PARDER | COMA | $ |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| **Programa** | 1 | 1 | 1 |   |   | 1 |   |   | 1 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | 2 |
+| **Regla** | 3 | 6 | 4 |   |   | 5 |   |   | 7 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+| **Decl** | 8 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+| **Si** |   |   | 9 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+| **Sino** | 11 | 11 | 11 |   | 10 | 11 |   |   | 11 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | 11 |
+| **Mientras** |   |   |   |   |   | 12 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+| **Accion** |   | 13 |   |   |   |   |   |   | 14 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+| **Asig** |   | 15 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+| **Escribir** |   |   |   |   |   |   |   |   | 16 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+| **Cond** |   | 17 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+| **Oprel** |   |   |   |   |   |   |   |   |   | 18 | 19 | 20 | 21 | 22 | 23 |   |   |   |   |   |   |   |   |   |   |   |   |
+| **Valor** |   | 24 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | 24 | 24 | 24 | 24 | 24 |   |   |   |
+| **Expr** |   | 25 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | 25 | 25 | 25 | 25 | 25 |   |   |   |
+| **ExprR** | 28 | 28 | 28 | 28 | 28 | 28 | 28 |   | 28 |   |   |   |   |   |   | 26 | 27 |   |   |   |   |   |   |   | 28 | 28 | 28 |
+| **Term** |   | 29 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | 29 | 29 | 29 | 29 | 29 |   |   |   |
+| **TermR** | 32 | 32 | 32 | 32 | 32 | 32 | 32 |   | 32 |   |   |   |   |   |   | 32 | 32 | 30 | 31 |   |   |   |   |   | 32 | 32 | 32 |
+| **Factor** |   | 37 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | 33 | 34 | 35 | 36 | 38 |   |   |   |
+| **Llamada** | 40 | 40 | 40 | 40 | 40 | 40 | 40 |   | 40 |   |   |   |   |   |   | 40 | 40 | 40 | 40 |   |   |   |   | 39 | 40 | 40 | 40 |
+| **Args** |   | 41 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | 41 | 41 | 41 | 41 | 41 | 42 |   |   |
+| **ArgsR** |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | 44 | 43 |   |

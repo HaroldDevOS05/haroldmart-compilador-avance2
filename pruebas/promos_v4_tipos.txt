@@ -1,0 +1,15 @@
+// Prueba de errores de TIPO (todo está declarado y bien escrito: lo que no tiene sentido son las operaciones)
+dinero total_compra
+numero piezas
+porcentaje tasa
+dinero descuento
+dinero envio
+texto tipo_cliente
+descuento = total_compra + tasa
+descuento = tasa
+envio = tipo_cliente
+SI tipo_cliente > 5 ENTONCES envio = $0
+descuento = redondear(tasa)
+descuento = total_compra * total_compra
+descuento = aplicar_descuento(total_compra, tasa)
+SI tipo_cliente == "frecuente" ENTONCES tasa = 10%

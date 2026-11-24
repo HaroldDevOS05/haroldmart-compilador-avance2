@@ -1,0 +1,20 @@
+Fase 1 · Léxico:        61 tokens, 0 error(es)
+Fase 2 · Sintaxis:      7 reglas, 6 error(es)
+Fase 3 · Declaraciones: 4 variables, 1 funciones, 0 error(es)
+Fase 4 · Tipos:         0 error(es)
+  [sintaxis] Línea 6: se esperaba ENTONCES antes de 'descuento' (lo supuse para seguir)
+  [sintaxis] Línea 7: error de sintaxis, se esperaba un operador de comparación (>, <, >=, <=, ==, !=) y llegó '60' (NUM)
+  [sintaxis] Línea 9: error de sintaxis, se esperaba un tipo (numero, dinero, porcentaje o texto), SI, MIENTRAS, ESCRIBIR o una variable al inicio de la regla y llegó 'SINO'
+  [sintaxis] Línea 10: error de sintaxis, se esperaba «)» y la línea terminó
+  [sintaxis] Línea 11: error de sintaxis, se esperaba un valor (número, precio como $300, porcentaje como 15%, variable o «(») y llegó 'ENTONCES'
+  [sintaxis] Línea 12: error de sintaxis, se esperaba un valor (número, precio como $300, porcentaje como 15%, variable o «(») y llegó ')' (PARDER)
+RESULTADO: 6 error(es) en total
+
+Nombre             Tipo        Clase             Declarada  Asignada en  Usada en
+total_compra       dinero      dato de la venta  2          —            6, 13
+descuento          dinero      resultado         3          6, 8, 13     —
+edad               numero      dato de la venta  4          —            13
+tipo_cliente       texto       dato de la venta  5          —            —
+Total: 4 variables
+Aviso: 'tipo_cliente' se declaró en la línea 5 pero nunca se usa
+Función minimo(dinero, dinero) → dinero: usada en la(s) línea(s) 13

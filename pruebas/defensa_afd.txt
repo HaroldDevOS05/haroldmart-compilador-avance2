@@ -1,0 +1,2 @@
+// Un renglón para explicar los AFD estado por estado en la defensa
+SI total_compra >= $1000.50

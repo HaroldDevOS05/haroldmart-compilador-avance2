@@ -1,0 +1,9 @@
+// Prueba de errores de DECLARACIÓN y de FUNCIONES (la sintaxis está bien, salvo la última línea)
+dinero total_compra
+dinero ahorro
+dinero total_compra
+ahorro = redondear(total_compra, 2)
+ahorro = descontar(total_compra)
+ahorro = minimo(total_compra)
+envio = redondear(total_compra)
+ahorro = redondear(total_compra

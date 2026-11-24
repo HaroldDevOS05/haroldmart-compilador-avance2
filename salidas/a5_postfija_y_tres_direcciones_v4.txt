@@ -1,0 +1,79 @@
+== Notación postfija (una por cada expresión con operaciones) ==
+  Línea 22: redondear(total_compra * tasa)   →   Postfija: total_compra tasa * redondear/1
+  Línea 24: km * 2 + $30   →   Postfija: km 2 * $30 +
+  Línea 27: precio_unitario * piezas   →   Postfija: precio_unitario piezas *
+  Línea 28: minimo(redondear(total_compra * tasa), $150)   →   Postfija: total_compra tasa * redondear/1 $150 minimo/2
+  Línea 29: aplicar_descuento(total_compra, tasa) + envio   →   Postfija: total_compra tasa aplicar_descuento/2 envio +
+  Línea 31: aplicar_descuento(pago, 15%)   →   Postfija: pago 15% aplicar_descuento/2
+  Línea 33: puntos - 100   →   Postfija: puntos 100 -
+
+== Código de tres direcciones (un solo generador: t1, t2... y L1, L2... no se repiten) ==
+Línea 20: tasa = 5%
+    tasa = 5%
+Línea 21: SI tipo_cliente == "frecuente" ENTONCES tasa = 10%
+    ifFalse tipo_cliente == "frecuente" goto L1
+    tasa = 10%
+L1:
+Línea 22: SI total_compra > $1000 ENTONCES descuento = redondear(total_compra * tasa) SINO descuento = $0
+    ifFalse total_compra > $1000 goto L2
+    t1 = total_compra * tasa
+    param t1
+    t2 = call redondear, 1
+    descuento = t2
+    goto L3
+L2:
+    descuento = $0
+L3:
+Línea 24: SI total_compra >= $500 ENTONCES envio = $0 SINO envio = km * 2 + $30
+    ifFalse total_compra >= $500 goto L4
+    envio = $0
+    goto L5
+L4:
+    t3 = km * 2
+    t4 = t3 + $30
+    envio = t4
+L5:
+Línea 26: SI piezas > 100 ENTONCES precio_unitario = $8.50 SINO precio_unitario = $10
+    ifFalse piezas > 100 goto L6
+    precio_unitario = $8.50
+    goto L7
+L6:
+    precio_unitario = $10
+L7:
+Línea 27: cotizacion = precio_unitario * piezas
+    t5 = precio_unitario * piezas
+    cotizacion = t5
+Línea 28: ahorro = minimo(redondear(total_compra * tasa), $150)
+    t6 = total_compra * tasa
+    param t6
+    t7 = call redondear, 1
+    param t7
+    param $150
+    t8 = call minimo, 2
+    ahorro = t8
+Línea 29: pago = aplicar_descuento(total_compra, tasa) + envio
+    param total_compra
+    param tasa
+    t9 = call aplicar_descuento, 2
+    t10 = t9 + envio
+    pago = t10
+Línea 31: SI edad >= 60 ENTONCES pago = aplicar_descuento(pago, 15%)
+    ifFalse edad >= 60 goto L8
+    param pago
+    param 15%
+    t11 = call aplicar_descuento, 2
+    pago = t11
+L8:
+Línea 33: MIENTRAS puntos > 100 HACER puntos = puntos - 100
+L9:
+    ifFalse puntos > 100 goto L10
+    t12 = puntos - 100
+    puntos = t12
+    goto L9
+L10:
+Línea 35: mensaje = "Promoción aplicada"
+    mensaje = "Promoción aplicada"
+Línea 36: SI tipo_cliente != "mostrador" ENTONCES ESCRIBIR mensaje
+    ifFalse tipo_cliente != "mostrador" goto L11
+    escribir mensaje
+L11:

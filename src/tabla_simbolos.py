@@ -27,6 +27,7 @@ from parser_con_recuperacion import lineas_de
 from evaluar_atributos import combinar, ErrorDeTipo, TIPOS_DE_LA_VENTA, primera_linea
 
 TIPO_DE_HOJA = {"NUM": "num", "PRECIO": "dinero", "PORC": "porc", "CADENA": "cadena"}
+TIPOS_INTERNOS = {"numero": "num", "dinero": "dinero", "porcentaje": "porc", "texto": "cadena"}
 
 
 class TablaDeSimbolos:
@@ -55,7 +56,7 @@ class TablaDeSimbolos:
 
 # ---------------- Paso 1: recorrer el árbol y juntar los hechos ----------------
 def es_id(n):
-    return not n.hijos and n.token and n.token[0] == "ID"
+    return not n.hijos and n.nombre == "ID" and bool(n.token)
 
 
 def usos_en(n, hechos):
@@ -86,6 +87,10 @@ def recorrer(nodo, hechos):
 # ---------------- Paso 2: inferir el tipo de cada variable ----------------
 def tipo_de(n, tipos):
     """Tipo de una expresión con lo que se sabe hasta ahora. None = todavía no se sabe (o es un error de tipo)."""
+    if n.nombre == "Llamada":                       # el tipo de una llamada es el que regresa la función
+        from funciones import FUNCIONES
+        firma = FUNCIONES.get(n.token[1])
+        return TIPOS_INTERNOS[firma[1]] if firma else None
     if not n.hijos:
         if n.token[0] == "ID":
             return tipos.get(n.token[1])

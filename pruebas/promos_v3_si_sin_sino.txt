@@ -1,0 +1,8 @@
+// Un SI sin SINO seguido de una declaración NO debe dar error (TIPO está en FOLLOW(Sino))
+dinero total_compra
+dinero descuento
+SI total_compra > $1000 ENTONCES descuento = total_compra * 5%
+numero puntos
+dinero cargo
+SI puntos > 100 ENTONCES cargo = $10
+texto aviso

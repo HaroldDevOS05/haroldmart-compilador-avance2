@@ -1,0 +1,10 @@
+// ENTREGA FINAL · Programa con errores LÉXICOS (símbolos que el lenguaje no conoce)
+dinero total_compra
+numero edad
+dinero descuento
+dinero precio_leche
+SI total_compra > $1000 ENTONCES descuento = redondear(total_compra * 5%)
+SI edad >= 60 @ ENTONCES descuento = $100
+SI precio_leche > $ ENTONCES precio_leche = $25.90
+SI edad ! 18 ENTONCES descuento = $0
+descuento = descuento + $5 #

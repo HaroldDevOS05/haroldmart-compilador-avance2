@@ -1,0 +1,8 @@
+Celda [Sino, $] = regla 11
+  Regla 11: Sino → ε  porque el lado derecho puede ser vacío y «$» está en FOLLOW(Sino) = { $, ESCRIBIR, ID, MIENTRAS, SI, TIPO }
+Celda [Sino, SINO] = regla 10
+  Regla 10: Sino → SINO Accion  porque «SINO» está en FIRST(SINO Accion) = { SINO }
+Celda [Factor, ID] = regla 37
+  Regla 37: Factor → ID Llamada  porque «ID» está en FIRST(ID Llamada) = { ID }
+Celda [Si, ENTONCES] VACÍA → error de sintaxis. Con Si se esperaba: SI
+Celda [Programa, SINO] VACÍA → error de sintaxis. Con Programa se esperaba: $, ESCRIBIR, ID, MIENTRAS, SI, TIPO

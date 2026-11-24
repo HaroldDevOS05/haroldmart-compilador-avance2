@@ -1,0 +1,13 @@
+// ENTREGA FINAL · Programa con errores SINTÁCTICOS en renglones distintos
+dinero total_compra
+dinero descuento
+numero edad
+texto tipo_cliente
+SI total_compra > $1000 descuento = $50
+SI edad 60 ENTONCES descuento = $100
+descuento = $10
+SINO descuento = $0
+descuento = redondear(total_compra
+SI tipo_cliente == ENTONCES descuento = $20
+descuento = aplicar_descuento(total_compra, )
+SI edad >= 60 ENTONCES descuento = minimo(total_compra, $500)

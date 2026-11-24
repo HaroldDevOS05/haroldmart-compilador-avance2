@@ -1,0 +1,8 @@
+LÍNEA TOKEN         LEXEMA                      RECORRIDO DEL AFD
+2     SI            SI                          q0→q1→q1
+2     ID            total_compra                q0→q1→q1→q1→q1→q1→q1→q1→q1→q1→q1→q1→q1
+2     MAYORIGUAL    >=                          q0→q1→q2
+2     PRECIO        $1000.50                    q0→q1→q2→q2→q2→q2→q3→q4→q4
+
+Total de tokens: 4
+Sin errores léxicos.

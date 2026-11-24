@@ -1,0 +1,20 @@
+Fase 1 · Léxico:        48 tokens, 4 error(es)
+Fase 2 · Sintaxis:      7 reglas, 0 error(es)
+Fase 3 · Declaraciones: 4 variables, 1 funciones, 0 error(es)
+Fase 4 · Tipos:         0 error(es)
+  [léxico] Línea 7: error léxico, símbolo inesperado '@'
+  [léxico] Línea 8: error léxico, precio incompleto '$' (falta un número después de '$')
+  [léxico] Línea 9: error léxico, '!' sola (para «distinto» se escribe !=)
+  [léxico] Línea 10: error léxico, símbolo inesperado '#'
+  (se omitieron 2 errores de sintaxis en renglones que ya tienen un error léxico: son consecuencia, errores en cascada)
+RESULTADO: 4 error(es) en total
+
+Nombre             Tipo        Clase             Declarada  Asignada en  Usada en
+total_compra       dinero      dato de la venta  2          —            6
+edad               numero      dato de la venta  3          —            —
+descuento          dinero      resultado         4          6            —
+precio_leche       dinero      dato de la venta  5          —            —
+Total: 4 variables
+Aviso: 'edad' se declaró en la línea 3 pero nunca se usa
+Aviso: 'precio_leche' se declaró en la línea 5 pero nunca se usa
+Función redondear(dinero) → dinero: usada en la(s) línea(s) 6

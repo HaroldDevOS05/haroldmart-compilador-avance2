@@ -1,0 +1,246 @@
+Programa
+├─ Regla
+│  └─ Decl
+│     ├─ TIPO: dinero
+│     └─ ID: total_compra
+├─ Regla
+│  └─ Decl
+│     ├─ TIPO: numero
+│     └─ ID: km
+├─ Regla
+│  └─ Decl
+│     ├─ TIPO: numero
+│     └─ ID: piezas
+├─ Regla
+│  └─ Decl
+│     ├─ TIPO: numero
+│     └─ ID: edad
+├─ Regla
+│  └─ Decl
+│     ├─ TIPO: numero
+│     └─ ID: puntos
+├─ Regla
+│  └─ Decl
+│     ├─ TIPO: texto
+│     └─ ID: tipo_cliente
+├─ Regla
+│  └─ Decl
+│     ├─ TIPO: porcentaje
+│     └─ ID: tasa
+├─ Regla
+│  └─ Decl
+│     ├─ TIPO: dinero
+│     └─ ID: descuento
+├─ Regla
+│  └─ Decl
+│     ├─ TIPO: dinero
+│     └─ ID: envio
+├─ Regla
+│  └─ Decl
+│     ├─ TIPO: dinero
+│     └─ ID: precio_unitario
+├─ Regla
+│  └─ Decl
+│     ├─ TIPO: dinero
+│     └─ ID: cotizacion
+├─ Regla
+│  └─ Decl
+│     ├─ TIPO: dinero
+│     └─ ID: pago
+├─ Regla
+│  └─ Decl
+│     ├─ TIPO: dinero
+│     └─ ID: ahorro
+├─ Regla
+│  └─ Decl
+│     ├─ TIPO: texto
+│     └─ ID: mensaje
+├─ Regla
+│  └─ Asig
+│     ├─ ID: tasa
+│     ├─ ASIGNA: =
+│     └─ Valor
+│        └─ PORC: 5%
+├─ Regla
+│  └─ Si
+│     ├─ SI: SI
+│     ├─ Cond
+│     │  ├─ ID: tipo_cliente
+│     │  ├─ Oprel
+│     │  │  └─ IGUAL: ==
+│     │  └─ Valor
+│     │     └─ CADENA: "frecuente"
+│     ├─ ENTONCES: ENTONCES
+│     └─ Accion
+│        └─ Asig
+│           ├─ ID: tasa
+│           ├─ ASIGNA: =
+│           └─ Valor
+│              └─ PORC: 10%
+├─ Regla
+│  └─ Si
+│     ├─ SI: SI
+│     ├─ Cond
+│     │  ├─ ID: total_compra
+│     │  ├─ Oprel
+│     │  │  └─ MAYOR: >
+│     │  └─ Valor
+│     │     └─ PRECIO: $1000
+│     ├─ ENTONCES: ENTONCES
+│     ├─ Accion
+│     │  └─ Asig
+│     │     ├─ ID: descuento
+│     │     ├─ ASIGNA: =
+│     │     └─ Valor
+│     │        └─ Llamada: redondear
+│     │           └─ *
+│     │              ├─ ID: total_compra
+│     │              └─ ID: tasa
+│     └─ Sino
+│        ├─ SINO: SINO
+│        └─ Accion
+│           └─ Asig
+│              ├─ ID: descuento
+│              ├─ ASIGNA: =
+│              └─ Valor
+│                 └─ PRECIO: $0
+├─ Regla
+│  └─ Si
+│     ├─ SI: SI
+│     ├─ Cond
+│     │  ├─ ID: total_compra
+│     │  ├─ Oprel
+│     │  │  └─ MAYORIGUAL: >=
+│     │  └─ Valor
+│     │     └─ PRECIO: $500
+│     ├─ ENTONCES: ENTONCES
+│     ├─ Accion
+│     │  └─ Asig
+│     │     ├─ ID: envio
+│     │     ├─ ASIGNA: =
+│     │     └─ Valor
+│     │        └─ PRECIO: $0
+│     └─ Sino
+│        ├─ SINO: SINO
+│        └─ Accion
+│           └─ Asig
+│              ├─ ID: envio
+│              ├─ ASIGNA: =
+│              └─ Valor
+│                 └─ +
+│                    ├─ *
+│                    │  ├─ ID: km
+│                    │  └─ NUM: 2
+│                    └─ PRECIO: $30
+├─ Regla
+│  └─ Si
+│     ├─ SI: SI
+│     ├─ Cond
+│     │  ├─ ID: piezas
+│     │  ├─ Oprel
+│     │  │  └─ MAYOR: >
+│     │  └─ Valor
+│     │     └─ NUM: 100
+│     ├─ ENTONCES: ENTONCES
+│     ├─ Accion
+│     │  └─ Asig
+│     │     ├─ ID: precio_unitario
+│     │     ├─ ASIGNA: =
+│     │     └─ Valor
+│     │        └─ PRECIO: $8.50
+│     └─ Sino
+│        ├─ SINO: SINO
+│        └─ Accion
+│           └─ Asig
+│              ├─ ID: precio_unitario
+│              ├─ ASIGNA: =
+│              └─ Valor
+│                 └─ PRECIO: $10
+├─ Regla
+│  └─ Asig
+│     ├─ ID: cotizacion
+│     ├─ ASIGNA: =
+│     └─ Valor
+│        └─ *
+│           ├─ ID: precio_unitario
+│           └─ ID: piezas
+├─ Regla
+│  └─ Asig
+│     ├─ ID: ahorro
+│     ├─ ASIGNA: =
+│     └─ Valor
+│        └─ Llamada: minimo
+│           ├─ Llamada: redondear
+│           │  └─ *
+│           │     ├─ ID: total_compra
+│           │     └─ ID: tasa
+│           └─ PRECIO: $150
+├─ Regla
+│  └─ Asig
+│     ├─ ID: pago
+│     ├─ ASIGNA: =
+│     └─ Valor
+│        └─ +
+│           ├─ Llamada: aplicar_descuento
+│           │  ├─ ID: total_compra
+│           │  └─ ID: tasa
+│           └─ ID: envio
+├─ Regla
+│  └─ Si
+│     ├─ SI: SI
+│     ├─ Cond
+│     │  ├─ ID: edad
+│     │  ├─ Oprel
+│     │  │  └─ MAYORIGUAL: >=
+│     │  └─ Valor
+│     │     └─ NUM: 60
+│     ├─ ENTONCES: ENTONCES
+│     └─ Accion
+│        └─ Asig
+│           ├─ ID: pago
+│           ├─ ASIGNA: =
+│           └─ Valor
+│              └─ Llamada: aplicar_descuento
+│                 ├─ ID: pago
+│                 └─ PORC: 15%
+├─ Regla
+│  └─ Mientras
+│     ├─ MIENTRAS: MIENTRAS
+│     ├─ Cond
+│     │  ├─ ID: puntos
+│     │  ├─ Oprel
+│     │  │  └─ MAYOR: >
+│     │  └─ Valor
+│     │     └─ NUM: 100
+│     ├─ HACER: HACER
+│     └─ Accion
+│        └─ Asig
+│           ├─ ID: puntos
+│           ├─ ASIGNA: =
+│           └─ Valor
+│              └─ -
+│                 ├─ ID: puntos
+│                 └─ NUM: 100
+├─ Regla
+│  └─ Asig
+│     ├─ ID: mensaje
+│     ├─ ASIGNA: =
+│     └─ Valor
+│        └─ CADENA: "Promoción aplicada"
+└─ Regla
+   └─ Si
+      ├─ SI: SI
+      ├─ Cond
+      │  ├─ ID: tipo_cliente
+      │  ├─ Oprel
+      │  │  └─ DIFERENTE: !=
+      │  └─ Valor
+      │     └─ CADENA: "mostrador"
+      ├─ ENTONCES: ENTONCES
+      └─ Accion
+         └─ Escribir
+            ├─ ESCRIBIR: ESCRIBIR
+            └─ Valor
+               └─ ID: mensaje
+
+Reglas reconocidas: 26 · errores: 0

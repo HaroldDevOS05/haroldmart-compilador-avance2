@@ -1,0 +1,25 @@
+Fase 1 · Léxico:        145 tokens, 0 error(es)
+Fase 2 · Sintaxis:      26 reglas, 0 error(es)
+Fase 3 · Declaraciones: 14 variables, 3 funciones, 0 error(es)
+Fase 4 · Tipos:         0 error(es)
+RESULTADO: programa correcto ✓
+
+Nombre             Tipo        Clase             Declarada  Asignada en  Usada en
+total_compra       dinero      dato de la venta  3          —            22, 24, 28, 29
+km                 numero      dato de la venta  4          —            24
+piezas             numero      dato de la venta  5          —            26, 27
+edad               numero      dato de la venta  6          —            31
+puntos             numero      dato y resultado  7          33           33
+tipo_cliente       texto       dato de la venta  8          —            21, 36
+tasa               porcentaje  resultado         10         20, 21       22, 28, 29
+descuento          dinero      resultado         11         22           —
+envio              dinero      resultado         12         24           29
+precio_unitario    dinero      resultado         13         26           27
+cotizacion         dinero      resultado         14         27           —
+pago               dinero      resultado         15         29, 31       31
+ahorro             dinero      resultado         16         28           —
+mensaje            texto       resultado         17         35           36
+Total: 14 variables
+Función redondear(dinero) → dinero: usada en la(s) línea(s) 22, 28
+Función minimo(dinero, dinero) → dinero: usada en la(s) línea(s) 28
+Función aplicar_descuento(dinero, porcentaje) → dinero: usada en la(s) línea(s) 29, 31
